@@ -4,113 +4,156 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AI Capabilities Playbook</title>
-<meta name="description" content="Guía visual e interactiva para usar ChatGPT y modelos de razonamiento. Plantillas de prompts, mejores prácticas y flujos Pro en un solo archivo."/>
+<meta name="description" content="Guía visual e interactiva para usar modelos de razonamiento (ChatGPT o similares): plantillas, mejores prácticas y flujos pro, en un solo archivo."/>
+
+<!-- PERF: preconnect for Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- PERF: only needed weights + display=swap -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+
 <style>
   :root{
-    --bg:#070b17;
-    --bg-2:#0b1224;
-    --text:#e7ecf5;
-    --muted:#9fb0c2;
-    --card:#0c1428;
-    --card-2:#0f1a33;
-    --glass:rgba(9,15,30,.55);
-    --stroke:rgba(151,177,214,.18);
-    --accent:#60a5fa; /* blue */
-    --accent-2:#facc15; /* yellow */
-    --good:#22c55e;
-    --warn:#f59e0b;
-    --bad:#ef4444;
-    --code:#0a1022;
+    /* Palette (pedido) */
+    --primary:#1E3A8A; /* Dark blue */
+    --teal:#14B8A6;
+    --teal-2:#6EE7B7;
+    --yellow:#FACC15;
+    --orange:#F97316;
+    --magenta:#EC4899;
+
+    /* Theme */
+    --bg:#F3F4F6;         /* Light gray background */
+    --bg-2:#FFFFFF;
+    --text:#0F172A;       /* Slate-900 */
+    --muted:#475569;      /* Slate-600 */
+    --card:#FFFFFF;
+    --card-2:#F8FAFC;
+    --glass:rgba(255,255,255,.75);
+    --stroke:rgba(2,6,23,.10);
+    --accent: var(--teal);
+    --accent-2: var(--yellow);
+    --good:#16A34A;
+    --warn:#F59E0B;
+    --bad:#DC2626;
+    --code:rgba(15,23,42,.06);
     --radius:16px;
-    --shadow: 0 20px 60px rgba(7,11,23,.45);
+    --shadow: 0 20px 50px rgba(2,6,23,.08);
   }
+
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
-    margin:0; color:var(--text); background: radial-gradient(1200px 1000px at 15% -10%, rgba(96,165,250,.10), transparent),
-    radial-gradient(1000px 900px at 110% 10%, rgba(250,204,21,.09), transparent),
-    linear-gradient(180deg, var(--bg), var(--bg-2));
-    font: 15px/1.6 Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell, Noto Sans, Helvetica, Arial;
+    margin:0; color:var(--text);
+    background:
+      radial-gradient(900px 700px at 10% -10%, rgba(20,184,166,.08), transparent),
+      radial-gradient(700px 600px at 110% 10%, rgba(236,72,153,.06), transparent),
+      linear-gradient(180deg, var(--bg), var(--bg-2));
+    font: 15px/1.65 "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial;
     overflow-x:hidden; scroll-behavior:smooth;
   }
-  /* animated aurora */
-  .aurora{ position:fixed; inset:-10vmax; pointer-events:none; z-index:0; filter: blur(60px); opacity:.9; }
-  .a1,.a2,.a3{ position:absolute; width:60vmax; height:60vmax; border-radius:9999px; mix-blend-mode:screen; }
-  .a1{ background: radial-gradient(circle at 40% 40%, rgba(96,165,250,.28), transparent 60%); animation: float1 20s ease-in-out infinite; left:5%; top:10%; }
-  .a2{ background: radial-gradient(circle at 60% 40%, rgba(99,102,241,.22), transparent 60%); animation: float2 26s ease-in-out infinite; right:0%; top:5%; }
-  .a3{ background: radial-gradient(circle at 50% 50%, rgba(250,204,21,.18), transparent 60%); animation: float3 28s ease-in-out infinite; left:20%; bottom:-5%; }
+
+  /* animated aurora (soft for perf) */
+  .aurora{ position:fixed; inset:-10vmax; pointer-events:none; z-index:0; filter: blur(60px); opacity:.45; }
+  .a1,.a2,.a3{ position:absolute; width:60vmax; height:60vmax; border-radius:9999px; mix-blend-mode:screen; will-change:transform; }
+  .a1{ background: radial-gradient(circle at 40% 40%, rgba(20,184,166,.28), transparent 60%); animation: float1 20s ease-in-out infinite; left:5%; top:10%; }
+  .a2{ background: radial-gradient(circle at 60% 40%, rgba(30,58,138,.22), transparent 60%); animation: float2 26s ease-in-out infinite; right:0%; top:5%; }
+  .a3{ background: radial-gradient(circle at 50% 50%, rgba(236,72,153,.18), transparent 60%); animation: float3 28s ease-in-out infinite; left:20%; bottom:-5%; }
   @keyframes float1{ 50%{ transform: translateY(-4%) translateX(2%) scale(1.04);} }
   @keyframes float2{ 50%{ transform: translateY(4%) translateX(-4%) scale(1.06);} }
   @keyframes float3{ 50%{ transform: translateY(-2%) translateX(3%) scale(1.03);} }
+  @media (prefers-reduced-motion: reduce){ .a1,.a2,.a3{ animation:none } .aurora{ filter: blur(40px); } }
 
   .wrap{ max-width:1200px; margin:0 auto; padding:26px 20px 120px; position:relative; z-index:1; }
-  .glass{ background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); border:1px solid var(--stroke); border-radius:var(--radius); box-shadow: var(--shadow); }
+  .glass{ background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.92)); border:1px solid var(--stroke); border-radius:var(--radius); box-shadow: var(--shadow); }
 
-  header.hero{ position:sticky; top:0; z-index:1000; padding:26px; backdrop-filter: blur(8px) saturate(150%);
-    background:linear-gradient(180deg, rgba(12,20,40,.85), rgba(12,20,40,.65)); border:1px solid rgba(152,186,234,.18); border-radius:20px; transition: padding .25s ease, transform .25s ease, background .3s ease; }
-  header.hero.shrink{ padding:16px 22px; background:linear-gradient(180deg, rgba(10,18,36,.92), rgba(10,18,36,.82)); }
+  /* Header with tabbar mode */
+  header.hero{ position:sticky; top:0; z-index:1000; padding:24px; backdrop-filter: blur(10px) saturate(160%); transition: padding .25s ease, transform .25s ease, background .3s ease; }
+  header.hero.shrink{ padding:16px 20px; }
+  header.hero.hide{ transform: translateY(-120%); }
+  header.hero.tabbar{
+    padding:10px 16px;
+    background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.92));
+    border:1px solid var(--stroke);
+  }
   .brand{ display:flex; align-items:center; gap:12px }
-  .logo{ width:32px; height:32px; border-radius:10px; background: conic-gradient(from 0deg, #60a5fa, #facc15, #7dd3fc, #a78bfa, #60a5fa); filter:saturate(120%); }
-  .title{ margin:0; font-size:22px; font-weight:800; letter-spacing:.2px; }
+  .logo{ width:32px; height:32px; border-radius:10px; background: conic-gradient(from 0deg, var(--primary), var(--yellow), var(--teal-2), var(--magenta), var(--primary)); filter:saturate(120%); }
+  .title{ margin:0; font-size:22px; font-weight:800; letter-spacing:.2px; color:var(--primary) }
   .sub{ margin:6px 0 0; color:var(--muted) }
 
   .toolbar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:14px }
-  .chip{ background:linear-gradient(180deg, rgba(96,165,250,.16), rgba(96,165,250,.08)); border:1px solid rgba(96,165,250,.35); color:#cfe6ff; padding:.35rem .6rem; border-radius:999px; font-weight:700; font-size:12px }
-  .btn{ display:inline-flex; gap:.45rem; align-items:center; padding:.55rem .8rem; border-radius:10px; border:1px solid var(--stroke); background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); color:var(--text); cursor:pointer; user-select:none }
-  .btn:hover{ transform: translateY(-1px) }
+  .chip{ background:linear-gradient(180deg, rgba(20,184,166,.16), rgba(20,184,166,.08)); border:1px solid rgba(20,184,166,.28); color:#065F46; padding:.35rem .6rem; border-radius:999px; font-weight:700; font-size:12px }
+  .btn{ display:inline-flex; gap:.45rem; align-items:center; padding:.55rem .8rem; border-radius:10px; border:1px solid var(--stroke); background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.8)); color:var(--text); cursor:pointer; user-select:none }
+  .btn:hover{ box-shadow:0 8px 18px rgba(2,6,23,.06) }
   .btn:active{ transform:none }
 
   nav.toc{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin:14px 0 0 }
-  .card{ padding:16px; background:linear-gradient(180deg, rgba(12,20,40,.68), rgba(12,20,40,.5)); border:1px solid var(--stroke); border-radius:16px }
+  .card{ padding:16px; background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.88)); border:1px solid var(--stroke); border-radius:16px }
   .card h3{ margin:0 0 6px }
 
-  h2{ font-size:26px; margin:0 0 4px }
-  section{ margin:28px 0 }
+  h2{ font-size:26px; margin:0 0 4px; color:var(--primary) }
+  section{ margin:28px 0; content-visibility:auto; contain-intrinsic-size: 600px; }
   .grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:14px }
-  .k{ padding:14px; background:linear-gradient(180deg, rgba(18,28,55,.75), rgba(12,20,40,.65)); border:1px solid var(--stroke); border-radius:14px }
-  .k .pill{ display:inline-block; font-weight:800; font-size:12px; letter-spacing:.3px; color:#c7e1ff; padding:.2rem .5rem; border-radius:999px; border:1px solid rgba(152,186,234,.35); background:rgba(96,165,250,.12) }
+  .k{ padding:14px; background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.88)); border:1px solid var(--stroke); border-radius:14px; box-shadow: 0 10px 24px rgba(2,6,23,.04) }
+  .k .pill{ display:inline-block; font-weight:800; font-size:12px; letter-spacing:.3px; color:var(--primary); padding:.2rem .5rem; border-radius:999px; border:1px solid rgba(30,58,138,.25); background:rgba(20,184,166,.12) }
   .k .desc{ color:var(--muted) }
 
   .two{ display:grid; grid-template-columns: 1.2fr .8fr; gap:16px }
   @media (max-width: 960px){ .two{ grid-template-columns:1fr } }
 
-  .code, pre{ background:var(--code); border:1px solid rgba(152,186,234,.22); border-radius:14px; padding:14px; overflow:auto; position:relative; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-  .copy{ position:absolute; top:8px; right:8px; border:1px solid var(--stroke); background:rgba(14,22,44,.6); color:var(--text); border-radius:8px; padding:.3rem .6rem; cursor:pointer; }
+  .code, pre{ background:var(--code); border:1px solid var(--stroke); border-radius:14px; padding:14px; overflow:auto; position:relative; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  .copy{ position:absolute; top:8px; right:8px; border:1px solid var(--stroke); background:rgba(2,6,23,.05); color:var(--text); border-radius:8px; padding:.3rem .6rem; cursor:pointer; }
 
-  details.ac{ background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02)); border:1px solid var(--stroke); border-radius:14px; padding:12px }
+  details.ac{ background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.96)); border:1px solid var(--stroke); border-radius:14px; padding:12px }
   details.ac+details.ac{ margin-top:10px }
   summary{ cursor:pointer; font-weight:800 }
 
-  .do{ background: rgba(34,197,94,.12); border-color: rgba(34,197,94,.35) }
-  .dont{ background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.35) }
+  .do{ background: rgba(22,163,74,.12); border-color: rgba(22,163,74,.28) }
+  .dont{ background: rgba(220,38,38,.12); border-color: rgba(220,38,38,.28) }
 
   .timeline{ position:relative; padding-left:24px }
-  .timeline::before{ content:""; position:absolute; left:8px; top:0; bottom:0; width:2px; background:linear-gradient(180deg, rgba(96,165,250,.6), rgba(250,204,21,.6)) }
-  .step{ margin:0 0 12px 0; padding:10px 12px; background:linear-gradient(180deg, rgba(12,20,40,.72), rgba(12,20,40,.56)); border:1px solid var(--stroke); border-radius:12px; }
-  .step .n{ font-weight:800; color:#bfdbfe }
+  .timeline::before{ content:""; position:absolute; left:8px; top:0; bottom:0; width:2px; background:linear-gradient(180deg, var(--teal), var(--yellow)) }
+  .step{ margin:0 0 12px 0; padding:10px 12px; background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.88)); border:1px solid var(--stroke); border-radius:12px; }
+  .step .n{ font-weight:800; color:var(--primary) }
 
   .table{ width:100%; border-collapse: collapse; overflow:hidden; border-radius:12px; }
-  .table th, .table td{ padding:10px 12px; border-bottom:1px solid rgba(152,186,234,.18) }
-  .table thead th{ text-align:left; background:rgba(96,165,250,.08); border-bottom:1px solid rgba(96,165,250,.28) }
+  .table th, .table td{ padding:10px 12px; border-bottom:1px solid rgba(2,6,23,.10) }
+  .table thead th{ text-align:left; background:rgba(20,184,166,.08); border-bottom:1px solid rgba(20,184,166,.28) }
 
-  .footer{ position:fixed; bottom:0; left:0; width:100%; background:rgba(10,18,36,.85); border-top:1px solid var(--stroke); color:var(--muted); padding:10px 0; text-align:center; z-index:1000; box-shadow:0 -10px 30px rgba(7,11,23,.45) }
+  /* Tabs shown in tabbar mode */
+  .tabs{ display:none; gap:8px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding:8px 0 0; }
+  .tabs a{
+    display:inline-flex; align-items:center; white-space:nowrap;
+    padding:.45rem .7rem; border-radius:999px; border:1px solid var(--stroke);
+    background:linear-gradient(180deg, rgba(255,255,255,.8), rgba(255,255,255,.7));
+    color:var(--primary); font-weight:700; text-decoration:none;
+  }
+  .tabs a:hover{ background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.85)); }
 
-  .tag{ display:inline-block; background:linear-gradient(180deg, rgba(250,204,21,.14), rgba(96,165,250,.08)); border:1px solid var(--stroke); border-radius:999px; padding:.15rem .5rem; font-size:12px; color:#ffe58f }
+  header.hero.tabbar .brand .sub,
+  header.hero.tabbar .toolbar,
+  header.hero.tabbar .toc{ display:none !important; }
+  header.hero.tabbar .title{ font-size:16px; color:var(--primary); }
+  header.hero.tabbar .tabs{ display:flex; }
 
-  .composer{ padding:14px; display:grid; gap:10px }
-  .composer label{ font-weight:700; font-size:13px; color:#cfe2ff }
-  .composer textarea, .composer input, .composer select{ width:100%; background:rgba(14,22,44,.6); color:var(--text); border:1px solid var(--stroke); border-radius:10px; padding:10px; resize:vertical }
-  .composer .row{ display:grid; grid-template-columns: repeat(2, 1fr); gap:10px }
-  @media (max-width:720px){ .composer .row{ grid-template-columns:1fr } }
+  /* Contact section (replaces fixed footer UX) */
+  footer.footer{
+    position: static; width:100%; margin:32px 0 0; padding:28px 20px;
+    background:linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,1));
+    border-top:1px solid var(--stroke); color:var(--muted); text-align:left; box-shadow:none;
+    border-radius:16px; 
+  }
+  footer.footer .wrap-inner{ max-width:1200px; margin:0 auto; display:grid; gap:12px;
+    grid-template-columns: 1.2fr .8fr; align-items:start; }
+  footer.footer h3{ margin:0 0 6px; color:var(--primary) }
+  footer.footer a{ color:var(--primary); text-decoration:none; font-weight:600 }
+  footer.footer a:hover{ text-decoration:underline }
+  @media (max-width: 960px){ footer.footer .wrap-inner{ grid-template-columns:1fr } }
 
-  .kbd{ display:inline-block; padding:.1rem .4rem; border-radius:6px; border:1px solid var(--stroke); background:rgba(255,255,255,.04); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size:12px }
-
-  .notice{ border-left:3px solid var(--accent); border-radius:10px; padding:10px 12px; background:rgba(96,165,250,.08) }
-
-  .icon{ width:18px; height:18px; display:inline-block; vertical-align:-3px; }
+  /* Graceful fallback if backdrop-filter unsupported */
+  @supports not ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
+    header.hero{ background: rgba(255,255,255,.98); }
+  }
 </style>
 </head>
 <body>
@@ -120,8 +163,8 @@
     <div class="brand">
       <div class="logo" aria-hidden="true"></div>
       <div>
-        <h1 class="title">AI Capabilities Playbook — ChatGPT & Modelos de Razonamiento</h1>
-        <p class="sub">Manual visual para dominar prompts, flujos de trabajo y buenas prácticas. Diseñado por Arthur x Ronald.</p>
+        <h1 class="title">AI Capabilities Playbook — Modelos de Razonamiento</h1>
+        <p class="sub">Manual visual para dominar prompts, flujos de trabajo y buenas prácticas.</p>
       </div>
     </div>
     <div class="toolbar">
@@ -129,6 +172,19 @@
       <button class="btn" id="btn-copy-framework">Copiar framework</button>
       <button class="btn" id="btn-toggle-compact">Compact/Expand</button>
     </div>
+
+    <!-- Tab manager (visible en modo tabbar) -->
+    <nav class="tabs" aria-label="Secciones">
+      <a href="#capabilities">Capacidades</a>
+      <a href="#prompting">Prompting</a>
+      <a href="#workflows">Workflows</a>
+      <a href="#quality">Calidad</a>
+      <a href="#tips">Ética</a>
+      <a href="#playground">Playground</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+
+    <!-- Tarjetas principales -->
     <nav class="toc">
       <a class="card" href="#capabilities"><h3>🧠 Capacidades</h3><div class="sub">Qué puede hacer un LLM moderno</div></a>
       <a class="card" href="#prompting"><h3>✍️ Prompting</h3><div class="sub">Frameworks + plantillas</div></a>
@@ -157,8 +213,8 @@
       </div>
       <div class="k">
         <div class="pill">Razonamiento estructurado</div>
-        <p class="desc">Divide problemas en pasos, planea y verifica. Pide <em>resúmenes de razonamiento</em> de alto nivel (no procesos internos).</p>
-        <pre class="code"><button class="copy">Copiar</button><code>Resuelve este problema en pasos verificables. Da un plan breve y luego la respuesta final con las comprobaciones que aplican.</code></pre>
+        <p class="desc">Divide problemas en pasos, planea y verifica. Pide resúmenes de razonamiento de alto nivel.</p>
+        <pre class="code"><button class="copy">Copiar</button><code>Resuelve este problema en pasos verificables. Da un plan breve y luego la respuesta final con comprobaciones.</code></pre>
       </div>
       <div class="k">
         <div class="pill">Visión (texto+imagen)</div>
@@ -167,22 +223,22 @@
       </div>
       <div class="k">
         <div class="pill">Funciones / Herramientas</div>
-        <p class="desc">Conexión a APIs ("function calling"), bases de datos, RAG y acciones automatizadas.</p>
+        <p class="desc">Conexión a APIs (function calling), bases de datos, RAG y acciones automatizadas.</p>
         <pre class="code"><button class="copy">Copiar</button><code>Cuando necesites datos de ventas, llama a getSales({region, from, to}). Si faltan parámetros, pregúntame primero. Responde con KPIs + insights.</code></pre>
       </div>
       <div class="k">
         <div class="pill">RAG (citas & fuentes)</div>
         <p class="desc">Recupera documentos y cita fuentes. Útil para investigación, compliance y soporte.</p>
-        <pre class="code"><button class="copy">Copiar</button><code>Usa RAG sobre mi carpeta "Políticas 2025". Devuelve respuesta sintetizada + 3 citas relevantes con enlace. Señala incertidumbres.</code></pre>
+        <pre class="code"><button class="copy">Copiar</button><code>Usa RAG sobre mi carpeta "Políticas 2025". Devuelve respuesta + 3 citas relevantes con enlace. Señala incertidumbres.</code></pre>
       </div>
       <div class="k">
         <div class="pill">Datos & Tablas</div>
-        <p class="desc">Construye tablas, valida datos, genera CSV/JSON, crea gráficos simples (cuando la herramienta lo permita).</p>
-        <pre class="code"><button class="copy">Copiar</button><code>Con este CSV, crea una tabla de 5 KPIs con definición, fórmula y ejemplo. Entrega también un dataset limpio (CSV) en tu respuesta.</code></pre>
+        <p class="desc">Construye tablas, valida datos, genera CSV/JSON, crea gráficos simples.</p>
+        <pre class="code"><button class="copy">Copiar</button><code>Con este CSV, crea una tabla de 5 KPIs con definición, fórmula y ejemplo. Entrega también un dataset limpio (CSV).</code></pre>
       </div>
       <div class="k">
         <div class="pill">Idiomas & Tono</div>
-        <p class="desc">Control fino sobre formalidad, jerga y estilos (marketing, académico, técnico, casual).</p>
+        <p class="desc">Control sobre formalidad, jerga y estilos (marketing, académico, técnico, casual).</p>
         <pre class="code"><button class="copy">Copiar</button><code>Reescribe este texto a tono profesional y conciso (máx. 120 palabras) y agrega una versión casual para redes.</code></pre>
       </div>
     </div>
@@ -198,307 +254,137 @@
         <div class="pill">Framework ROCFT</div>
         <p><strong>R</strong>ol • <strong>O</strong>bjetivo • <strong>C</strong>ontexto • <strong>F</strong>ormato • <strong>T</strong>ono.</p>
         <div class="notice">Tip: Añade <span class="kbd">"Evita contenido sensible"</span> y <span class="kbd">"Si falta info, pregunta"</span>.</div>
-        <pre class="code"><button class="copy">Copiar</button><code>Rol: [experto deseado].
-Objetivo: [qué necesitas].
-Contexto: [quién eres / restricciones / datos].
-Formato: [tabla | JSON | lista | código | bullets].
-Tono: [profesional | friendly | breve | motivador].
-Validación: [cómo verificar la salida].</code></pre>
+        <pre class="code"><button class="copy">Copiar</button><code>Actúa como [rol]. Objetivo: [objetivo]. Contexto: [contexto]. Formato: [formato]. Tono: [tono]. Restricciones: [límites]. Si falta info, pregunta.</code></pre>
       </div>
       <div class="k">
-        <div class="pill">Do / Don’t</div>
-        <div class="grid">
-          <div class="k do">
-            <strong>Haz:</strong>
-            <ul>
-              <li>Da <em>contexto suficiente</em> y ejemplos.</li>
-              <li>Pide <em>formato</em> y <em>longitud</em>.</li>
-              <li>Permite preguntas aclaratorias.</li>
-              <li>Solicita un <em>resumen del razonamiento</em> (alto nivel), no procesos internos.</li>
-            </ul>
-          </div>
-          <div class="k dont">
-            <strong>No hagas:</strong>
-            <ul>
-              <li>Pedidos vagos del tipo “hazlo mejor”.</li>
-              <li>Compartir datos sensibles sin necesidad.</li>
-              <li>Pedir cadenas de pensamiento internas.</li>
-              <li>Ignorar límites de la herramienta.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <details class="ac" open>
-      <summary>Plantillas rápidas (copiar/pegar)</summary>
-      <div class="grid">
-        <div class="k">
-          <div class="pill">Resumen ejecutivo</div>
-          <pre class="code"><button class="copy">Copiar</button><code>Actúa como analista. Resume [tema] en 6 viñetas (máx. 12 palabras c/u) + 3 riesgos + 3 oportunidades. Entrega en tabla Markdown.</code></pre>
-        </div>
-        <div class="k">
-          <div class="pill">Comparador</div>
-          <pre class="code"><button class="copy">Copiar</button><code>Compara A vs B para [caso]. Entrega: tabla de pros/cons, recomendación final y supuestos.</code></pre>
-        </div>
-        <div class="k">
-          <div class="pill">Reescritura</div>
-          <pre class="code"><button class="copy">Copiar</button><code>Reescribe este texto para [audiencia], tono [x], longitud [n palabras], con CTA final y 2 variantes de asunto.</code></pre>
-        </div>
-        <div class="k">
-          <div class="pill">Datos → Insights</div>
-          <pre class="code"><button class="copy">Copiar</button><code>Con estos datos (pegar tabla), detecta 5 insights accionables, 3 outliers y sugiere 2 experimentos A/B. Prioriza por impacto/escala.</code></pre>
-        </div>
-        <div class="k">
-          <div class="pill">QA – feedback por colores</div>
-          <pre class="code"><button class="copy">Copiar</button><code>Analiza el caso y genera feedback en 3 secciones: Verde (elogios), Amarillo (mejoras con 1 acción), Rojo (coaching con 2 acciones + seguimiento).</code></pre>
-        </div>
-        <div class="k">
-          <div class="pill">Excel/Power Apps</div>
-          <pre class="code"><button class="copy">Copiar</button><code>Proporciona 1 fórmula lista para pegar que mapee texto a categorías según keywords. Explica en 3 líneas. Debe ignorar mayúsculas/minúsculas.</code></pre>
-        </div>
-      </div>
-    </details>
-  </section>
-
-  <!-- WORKFLOWS PRO -->
-  <section id="workflows">
-    <h2>⚙️ Workflows Pro</h2>
-    <p class="sub">Estructuras que puedes repetir para trabajo real.</p>
-    <div class="two">
-      <div class="k">
-        <div class="pill">Investigación con citas</div>
-        <ol class="timeline">
-          <li class="step"><span class="n">1.</span> Define alcance y preguntas. Pide “si falta info, pregunta”.</li>
-          <li class="step"><span class="n">2.</span> Solicita fuentes confiables y <em>citas</em>. Pide límites/incertidumbres.</li>
-          <li class="step"><span class="n">3.</span> Solicita síntesis en 2 niveles: ejecutivo y técnico.</li>
-          <li class="step"><span class="n">4.</span> Pide checklist de verificación y próximos pasos.</li>
-        </ol>
-        <pre class="code"><button class="copy">Copiar</button><code>Actúa como investigador. Explora [tema] con rigor. Entrega: 1) resumen ejecutivo, 2) 5 hallazgos con implicaciones, 3) bibliografía APA reciente, 4) límites. Si faltan datos, pregunta.</code></pre>
-      </div>
-      <div class="k">
-        <div class="pill">Productividad di diaria</div>
-        <table class="table">
-          <thead><tr><th>Rutina</th><th>Prompt base</th><th>Salida</th></tr></thead>
-          <tbody>
-            <tr><td>Plan del día</td><td>Objetivos, 3 tareas clave, 2 bloques focus, 1 break.</td><td>Lista + calendario tentativo</td></tr>
-            <tr><td>Correo difícil</td><td>Contexto + tono + 2 variantes</td><td>Borradores listos</td></tr>
-            <tr><td>Revisión QA</td><td>Plantilla colores + evidencias</td><td>Feedback accionable</td></tr>
-          </tbody>
-        </table>
+        <div class="pill">Plantillas útiles</div>
+        <ul>
+          <li>Corrección/reescritura con criterios explícitos</li>
+          <li>Evaluador con rúbrica</li>
+          <li>Generador de datos sintéticos</li>
+          <li>Agente de QA para workflows</li>
+        </ul>
       </div>
     </div>
   </section>
 
   <!-- QUALITY -->
   <section id="quality">
-    <h2>📏 Calidad: cómo evaluar salidas</h2>
-    <p class="sub">Define criterios y mide precisión, cobertura y utilidad.</p>
+    <h2>📏 Calidad</h2>
     <div class="grid">
-      <div class="k">
-        <div class="pill">Rubrica rápida</div>
-        <table class="table">
-          <thead><tr><th>Criterio</th><th>OK</th><th>Falla común</th></tr></thead>
-          <tbody>
-            <tr><td>Relevancia</td><td>Responde exactamente a lo pedido</td><td>Divaga o ignora requisitos</td></tr>
-            <tr><td>Exactitud</td><td>Verificable / fuentes citadas</td><td>Afirmaciones sin soporte</td></tr>
-            <tr><td>Formato</td><td>Tabla/JSON/código según pedido</td><td>Entrega libre sin estructura</td></tr>
-            <tr><td>Tono</td><td>Adecuado a audiencia</td><td>Muy técnico o muy casual</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="k">
-        <div class="pill">Iteración</div>
+      <div class="k do"><strong>Haz:</strong> define inputs, salidas y criterios de éxito medibles.</div>
+      <div class="k dont"><strong>Evita:</strong> pedir “magia”; sé concreto con formato, tono y límites.</div>
+      <div class="k"><div class="pill">Checklist</div>
         <ul>
-          <li>Si la salida no sirve: especifica qué faltó.</li>
-          <li>Pide un <em>delta</em> vs. versión anterior.</li>
-          <li>Guarda tus mejores prompts como plantillas.</li>
+          <li>Fuentes/citas cuando aplica</li>
+          <li>Verificación rápida (self-check)</li>
+          <li>Incertidumbres explícitas</li>
         </ul>
-        <pre class="code"><button class="copy">Copiar</button><code>Repite la respuesta incorporando estos cambios: [lista]. Explica qué modificaste (máx. 5 viñetas). Mantén el mismo formato.</code></pre>
       </div>
     </div>
   </section>
 
-  <!-- ETHICS & SAFETY -->
+  <!-- TIPS -->
   <section id="tips">
     <h2>🛡️ Ética & Seguridad</h2>
-    <p class="sub">Protege datos, respeta límites y documenta supuestos.</p>
-    <div class="grid">
-      <div class="k">
-        <div class="pill">Privacidad</div>
-        <ul>
-          <li>Minimiza datos personales; anonimiza cuando puedas.</li>
-          <li>Evita subir credenciales o PII. Usa variables simuladas.</li>
-          <li>Revisa políticas de tu empresa antes de compartir.</li>
-        </ul>
-      </div>
-      <div class="k">
-        <div class="pill">Transparencia</div>
-        <ul>
-          <li>Declara fuentes, supuestos y límites.</li>
-          <li>Para temas sensibles, pide verificación humana.</li>
-          <li>No solicites cadenas de pensamiento internas.</li>
-        </ul>
-      </div>
-      <div class="k">
-        <div class="pill">Evitar sesgos</div>
-        <ul>
-          <li>Solicita perspectivas múltiples.</li>
-          <li>Incluye criterios objetivos y escenarios contrarios.</li>
-        </ul>
-      </div>
-    </div>
+    <details class="ac"><summary>Privacidad</summary><p>Evita datos sensibles; usa datos ficticios cuando puedas.</p></details>
+    <details class="ac"><summary>Limitaciones</summary><p>Señala incertidumbres y evita afirmaciones categóricas sin respaldo.</p></details>
   </section>
 
-  <!-- PLAYGROUND -->
+  <!-- PLAYGROUND (demo simple) -->
   <section id="playground">
-    <h2>🎛️ Prompt Playground (constructor)</h2>
-    <p class="sub">Arma tu prompt con bloques y cópialo listo.</p>
+    <h2>🎛️ Playground de prompts</h2>
     <div class="k composer">
+      <label for="role">Rol</label>
+      <input id="role" placeholder="Ej. Analista, Profesor, Revisor…"/>
       <div class="row">
         <div>
-          <label>Rol</label>
-          <input id="p-role" placeholder="p.ej., Experto en QA, Analista de datos, Redactor técnico" />
+          <label for="goal">Objetivo</label>
+          <input id="goal" placeholder="Qué quieres lograr"/>
         </div>
         <div>
-          <label>Tono</label>
-          <select id="p-tone">
-            <option value="profesional">Profesional</option>
-            <option value="amigable">Amigable</option>
-            <option value="conciso">Conciso</option>
-            <option value="inspirador">Inspirador</option>
-          </select>
+          <label for="tone">Tono</label>
+          <input id="tone" placeholder="Profesional, casual, empático…"/>
         </div>
       </div>
-      <div>
-        <label>Objetivo</label>
-        <input id="p-goal" placeholder="¿Qué necesitas lograr?" />
-      </div>
-      <div>
-        <label>Contexto</label>
-        <textarea id="p-context" rows="3" placeholder="Quién eres, restricciones, datos relevantes…"></textarea>
-      </div>
-      <div class="row">
-        <div>
-          <label>Formato esperado</label>
-          <input id="p-format" placeholder="Tabla | JSON | Bullets | Código | Mixto" />
-        </div>
-        <div>
-          <label>Validación</label>
-          <input id="p-validate" placeholder="Cómo verificar la salida" />
-        </div>
-      </div>
-      <div class="row">
-        <div>
-          <label>Longitud</label>
-          <input id="p-length" placeholder="máx. 200 palabras, 6 viñetas, etc." />
-        </div>
-        <div>
-          <label>Idioma</label>
-          <input id="p-lang" value="es" />
-        </div>
-      </div>
-      <div>
-        <label>Extras (opcional)</label>
-        <input id="p-extras" placeholder="Si falta info, pregunta • Evita contenido sensible • Usa citas si aplican" />
-      </div>
-      <div class="toolbar">
-        <button class="btn" id="btn-build">Construir prompt</button>
-        <button class="btn" id="btn-copy-result">Copiar resultado</button>
-        <span class="tag">Consejo: guarda tus presets como snippets</span>
-      </div>
-      <pre id="p-result" class="code" aria-live="polite"><code></code></pre>
+      <label for="context">Contexto</label>
+      <textarea id="context" rows="4" placeholder="Pega datos/condiciones"></textarea>
+      <label for="format">Formato de salida</label>
+      <input id="format" placeholder="Tabla Markdown, JSON, viñetas…"/>
+      <button class="btn" id="btn-build">Construir prompt</button>
+      <pre class="code" id="out"><button class="copy">Copiar</button><code></code></pre>
     </div>
   </section>
 
   <!-- FAQ -->
   <section id="faq">
     <h2>❓ FAQ</h2>
-    <details class="ac" open>
-      <summary>¿Cómo logro respuestas más precisas?</summary>
-      <p>Define el objetivo, da contexto específico, exige formato y longitud, permite preguntas y pide un <em>resumen del razonamiento</em> de alto nivel para entender el enfoque.</p>
-    </details>
-    <details class="ac">
-      <summary>¿Cuándo usar RAG o funciones?</summary>
-      <p>Cuando necesitas datos de tus documentos, bases o APIs. Pide citas, maneja errores y valida entradas.</p>
-    </details>
-    <details class="ac">
-      <summary>¿Cómo iterar sin perder el control?</summary>
-      <p>Trabaja en versiones. Pide un delta entre versiones, registra supuestos y bloquea el formato.</p>
-    </details>
+    <details class="ac"><summary>¿Puedo incrustar este archivo en Google Sites?</summary><p>Sí: publícalo (GitHub Pages/Netlify) y usa “Insertar → URL”. Carga dentro de un iframe y conserva estilos/JS.</p></details>
   </section>
 
+  <!-- Contacto (no-footer fijo) -->
+  <footer class="footer">
+    <div class="wrap-inner">
+      <div>
+        <h3>Contacto</h3>
+        <p class="sub">¿Preguntas o sugerencias sobre este playbook? Escríbeme.</p>
+        <ul>
+          <li>Correo: <a href="mailto:example@company.com">ronald.guido@concentrix.com</a></li>
+          <li>Teams: <a href="#" onclick="return false;">Disponible por Microsoft Teams</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Acerca del documento</h3>
+        <p>Guía práctica sobre modelos de razonamiento: mejores prácticas, plantillas y flujos.</p>
+        <div class="toolbar">
+          <span class="chip">Actualizado: 2025-08-13</span>
+          <span class="chip">Versión: 1.2</span>
+        </div>
+      </div>
+    </div>
+  </footer>
 </div>
 
-<footer class="footer"></footer>
-
 <script>
-  // shrink header on scroll
-  (function(){
-    const h = document.querySelector('header.hero');
-    let last = 0; const t = 8;
-    window.addEventListener('scroll', ()=>{
-      const y = scrollY || 0; h.classList.toggle('shrink', y>10);
-      if(y>last+t && y>140){ h.style.transform='translateY(-120%)'; }
-      else if(y<last-t){ h.style.transform=''; }
-      last=y;
-    }, {passive:true});
-  })();
+// Tiny helper: copy buttons
+addEventListener('click', (e)=>{
+  const b = e.target.closest('.copy'); if(!b) return;
+  const pre = b.parentElement; const code = pre.querySelector('code');
+  const text = code ? code.textContent : '';
+  navigator.clipboard?.writeText(text).then(()=>{ b.textContent='Copiado ✓'; setTimeout(()=>b.textContent='Copiar',1200); })
+  .catch(()=>{ alert('Copia manual: selecciona y Ctrl/Cmd+C'); });
+}, {passive:true});
 
-  // copy buttons in code blocks
-  document.querySelectorAll('.code .copy').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const code = btn.nextElementSibling.textContent; navigator.clipboard.writeText(code).then(()=>{
-        const old = btn.textContent; btn.textContent='Copiado!'; setTimeout(()=>btn.textContent=old, 1100);
-      });
-    });
-  });
+// Playground builder
+const $ = (s)=>document.querySelector(s);
+const out = $('#out code');
+$('#btn-build')?.addEventListener('click', ()=>{
+  const role=$('#role').value.trim();
+  const goal=$('#goal').value.trim();
+  const ctx=$('#context').value.trim();
+  const fmt=$('#format').value.trim();
+  const tone=$('#tone').value.trim();
+  out.textContent = `Actúa como ${role||'[rol]'}. Objetivo: ${goal||'[objetivo]'}. Contexto: ${ctx||'[contexto]'}. Formato: ${fmt||'[formato]'}. Tono: ${tone||'[tono]'}. Si falta info, pregúntame.`;
+});
 
-  // toolbar actions
-  const fw = `Rol: [experto].\nObjetivo: [qué].\nContexto: [quién/restricciones/datos].\nFormato: [tabla/JSON/lista/código].\nTono: [profesional/etc].\nValidación: [cómo se valida].`;
-  document.getElementById('btn-copy-framework')?.addEventListener('click',()=>{
-    navigator.clipboard.writeText(fw);
-  });
-
-  // compact mode
-  let compact=false;
-  document.getElementById('btn-toggle-compact')?.addEventListener('click',()=>{
-    compact=!compact; document.body.style.setProperty('--radius', compact?'12px':'16px');
-    document.querySelectorAll('.k, .card, .code, details.ac').forEach(el=>{ el.style.padding = compact ? '10px' : ''; });
-  });
-
-  // prompt builder
-  function build(){
-    const role = document.getElementById('p-role').value?.trim();
-    const tone = document.getElementById('p-tone').value;
-    const goal = document.getElementById('p-goal').value?.trim();
-    const context = document.getElementById('p-context').value?.trim();
-    const format = document.getElementById('p-format').value?.trim();
-    const validate = document.getElementById('p-validate').value?.trim();
-    const length = document.getElementById('p-length').value?.trim();
-    const lang = document.getElementById('p-lang').value?.trim() || 'es';
-    const extras = document.getElementById('p-extras').value?.trim();
-
-    const lines = [];
-    if(role) lines.push(`Actúa como ${role}.`);
-    if(goal) lines.push(`Objetivo: ${goal}`);
-    if(context) lines.push(`Contexto: ${context}`);
-    if(format) lines.push(`Formato: ${format}`);
-    if(length) lines.push(`Longitud: ${length}`);
-    if(tone) lines.push(`Tono: ${tone}`);
-    if(validate) lines.push(`Validación: ${validate}`);
-    if(extras) lines.push(extras);
-    lines.push(`Idioma: ${lang}`);
-
-    const out = lines.join('\n');
-    const pre = document.querySelector('#p-result code');
-    pre.textContent = out;
-  }
-  document.getElementById('btn-build')?.addEventListener('click', build);
-  document.getElementById('btn-copy-result')?.addEventListener('click',()=>{
-    const txt = document.querySelector('#p-result code')?.textContent || '';
-    navigator.clipboard.writeText(txt);
-  });
+// Header behavior: hide on scroll down, show compact tabbar on scroll up; full only near top
+(function(){
+  const h = document.querySelector('header.hero');
+  let lastY = 0, ticking = false; const clampTop = 60;
+  const setMode = (mode)=>{
+    h.classList.remove('tabbar','hide','shrink');
+    if(mode==='tabbar') h.classList.add('tabbar','shrink');
+    if(mode==='hide') h.classList.add('hide');
+  };
+  const onScroll = ()=>{
+    const y = scrollY||0; const dir = (y>lastY)?'down':'up';
+    if (y <= clampTop){ setMode('full'); }
+    else if (dir==='down' && y>lastY+8){ setMode('hide'); }
+    else if (dir==='up' && lastY-y>8){ setMode('tabbar'); }
+    lastY = y; ticking=false;
+  };
+  addEventListener('scroll', ()=>{ if(!ticking){ ticking=true; requestAnimationFrame(onScroll); } }, {passive:true});
+})();
 </script>
 </body>
 </html>
