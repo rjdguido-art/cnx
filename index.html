@@ -10,19 +10,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#070b17; --bg-2:#0b1224; --text:#e7ecf5; --muted:#9fb0c2;
-    --card:#0c1428; --card-2:#0f1a33; --glass:rgba(9,15,30,.55);
-    --stroke:rgba(151,177,214,.18); --accent:#60a5fa; --accent-2:#facc15;
-    --good:#22c55e; --warn:#f59e0b; --bad:#ef4444; --code:#0a1022;
-    --radius:16px; --shadow: 0 20px 60px rgba(7,11,23,.45);
+    --bg:#070b17;
+    --bg-2:#0b1224;
+    --text:#e7ecf5;
+    --muted:#9fb0c2;
+    --card:#0c1428;
+    --card-2:#0f1a33;
+    --glass:rgba(9,15,30,.55);
+    --stroke:rgba(151,177,214,.18);
+    --accent:#60a5fa; /* blue */
+    --accent-2:#facc15; /* yellow */
+    --good:#22c55e;
+    --warn:#f59e0b;
+    --bad:#ef4444;
+    --code:#0a1022;
+    --radius:16px;
+    --shadow: 0 20px 60px rgba(7,11,23,.45);
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
-    margin:0; color:var(--text);
-    background: radial-gradient(1200px 1000px at 15% -10%, rgba(96,165,250,.10), transparent),
-               radial-gradient(1000px 900px at 110% 10%, rgba(250,204,21,.09), transparent),
-               linear-gradient(180deg, var(--bg), var(--bg-2));
+    margin:0; color:var(--text); background: radial-gradient(1200px 1000px at 15% -10%, rgba(96,165,250,.10), transparent),
+    radial-gradient(1000px 900px at 110% 10%, rgba(250,204,21,.09), transparent),
+    linear-gradient(180deg, var(--bg), var(--bg-2));
     font: 15px/1.6 Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell, Noto Sans, Helvetica, Arial;
     overflow-x:hidden; scroll-behavior:smooth;
   }
@@ -36,7 +46,7 @@
   @keyframes float2{ 50%{ transform: translateY(4%) translateX(-4%) scale(1.06);} }
   @keyframes float3{ 50%{ transform: translateY(-2%) translateX(3%) scale(1.03);} }
 
-  .wrap{ max-width:1200px; margin:0 auto; padding:26px 20px 140px; position:relative; z-index:1; }
+  .wrap{ max-width:1200px; margin:0 auto; padding:26px 20px 120px; position:relative; z-index:1; }
   .glass{ background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); border:1px solid var(--stroke); border-radius:var(--radius); box-shadow: var(--shadow); }
 
   header.hero{ position:sticky; top:0; z-index:1000; padding:26px; backdrop-filter: blur(8px) saturate(150%);
@@ -100,18 +110,7 @@
 
   .notice{ border-left:3px solid var(--accent); border-radius:10px; padding:10px 12px; background:rgba(96,165,250,.08) }
 
-  .toast{ position:fixed; left:50%; bottom:80px; transform:translateX(-50%); padding:10px 14px; border-radius:10px; border:1px solid var(--stroke); background:rgba(12,20,40,.9); color:var(--text); box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:opacity .22s ease; }
-  .toast.show{ opacity:1 }
-
-  /* Modal fallback for blocked clipboard */
-  .modal{ position:fixed; inset:0; background:rgba(5,8,18,.6); display:none; align-items:center; justify-content:center; z-index:2000; }
-  .modal.open{ display:flex }
-  .modal .panel{ width:min(780px,92vw); background:linear-gradient(180deg, rgba(20,28,56,.96), rgba(12,20,40,.96)); border:1px solid var(--stroke); border-radius:16px; padding:16px; box-shadow:var(--shadow) }
-  .modal h3{ margin:0 0 8px }
-  .modal p{ margin:0 0 10px; color:var(--muted) }
-  .modal textarea{ width:100%; min-height:180px; background:rgba(14,22,44,.6); color:var(--text); border:1px solid var(--stroke); border-radius:10px; padding:10px; }
-  .modal .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px }
-  .modal .actions .btn{ border-color:rgba(96,165,250,.35) }
+  .icon{ width:18px; height:18px; display:inline-block; vertical-align:-3px; }
 </style>
 </head>
 <body>
@@ -137,7 +136,6 @@
       <a class="card" href="#quality"><h3>📏 Calidad</h3><div class="sub">Evaluación y control</div></a>
       <a class="card" href="#tips"><h3>🛡️ Ética & Seguridad</h3><div class="sub">Buenas prácticas</div></a>
       <a class="card" href="#playground"><h3>🎛️ Playground</h3><div class="sub">Creador de prompts</div></a>
-      <a class="card" href="#tests"><h3>🧪 Tests</h3><div class="sub">Autocomprobaciones</div></a>
       <a class="card" href="#faq"><h3>❓ FAQ</h3><div class="sub">Dudas comunes</div></a>
     </nav>
   </header>
@@ -145,7 +143,7 @@
   <!-- CAPABILITIES -->
   <section id="capabilities">
     <h2>🧠 Capacidades de modelos de razonamiento</h2>
-    <p class="sub">Texto, análisis, código, visión, funciones y más. Ejemplos listos para copiar. <span class="tag">Nota: si “Copiar” falla por permisos del navegador, aparecerá un modal con el texto preseleccionado y opción de descargar .txt</span></p>
+    <p class="sub">Texto, análisis, código, visión, funciones y más. Ejemplos listos para copiar.</p>
     <div class="grid">
       <div class="k">
         <div class="pill">Análisis de texto</div>
@@ -279,7 +277,7 @@ Validación: [cómo verificar la salida].</code></pre>
         <pre class="code"><button class="copy">Copiar</button><code>Actúa como investigador. Explora [tema] con rigor. Entrega: 1) resumen ejecutivo, 2) 5 hallazgos con implicaciones, 3) bibliografía APA reciente, 4) límites. Si faltan datos, pregunta.</code></pre>
       </div>
       <div class="k">
-        <div class="pill">Productividad diaria</div>
+        <div class="pill">Productividad di diaria</div>
         <table class="table">
           <thead><tr><th>Rutina</th><th>Prompt base</th><th>Salida</th></tr></thead>
           <tbody>
@@ -413,19 +411,6 @@ Validación: [cómo verificar la salida].</code></pre>
     </div>
   </section>
 
-  <!-- TESTS -->
-  <section id="tests">
-    <h2>🧪 Autotests (no cambies estos casos)</h2>
-    <p class="sub">Validan que el botón de “Copiar” nunca rompa en entornos con políticas restrictivas.</p>
-    <div class="k">
-      <div class="toolbar">
-        <button class="btn" id="run-tests">Run tests</button>
-        <span id="tests-status" class="tag">Idle</span>
-      </div>
-      <ol id="tests-results" class="timeline" aria-live="polite"></ol>
-    </div>
-  </section>
-
   <!-- FAQ -->
   <section id="faq">
     <h2>❓ FAQ</h2>
@@ -445,30 +430,10 @@ Validación: [cómo verificar la salida].</code></pre>
 
 </div>
 
-<footer class="footer">Creado por Arthur y Ronald — Hecho con cariño por Arthur 💙 Amarillo x Azul vibes • v2.1 — Agosto 2025</footer>
-
-<div class="toast" role="status" aria-live="polite" id="toast"></div>
-<div class="modal" id="copy-modal" aria-modal="true" role="dialog" aria-labelledby="copy-title">
-  <div class="panel">
-    <h3 id="copy-title">Permiso denegado para copiar automáticamente</h3>
-    <p>Tu navegador o política de la página bloqueó el portapapeles. Te dejamos el texto preseleccionado; presiona <span class="kbd">Ctrl/⌘ + C</span> para copiar, o descárgalo como .txt.</p>
-    <textarea id="copy-text" readonly></textarea>
-    <div class="actions">
-      <button class="btn" id="btn-select-all">Seleccionar todo</button>
-      <button class="btn" id="btn-download">Descargar .txt</button>
-      <button class="btn" id="btn-close-modal">Cerrar</button>
-    </div>
-  </div>
-</div>
+<footer class="footer">Creado por Arthur y Ronald — Hecho con cariño por Arthur 💙 Amarillo x Azul vibes • v2 — Agosto 2025</footer>
 
 <script>
-  // ===== UI helpers =====
-  const $ = (q,root=document)=>root.querySelector(q);
-  const $$ = (q,root=document)=>Array.from(root.querySelectorAll(q));
-  const toastEl = $('#toast');
-  function toast(msg){ toastEl.textContent = msg; toastEl.classList.add('show'); setTimeout(()=>toastEl.classList.remove('show'), 1600); }
-
-  // ===== Header shrink on scroll =====
+  // shrink header on scroll
   (function(){
     const h = document.querySelector('header.hero');
     let last = 0; const t = 8;
@@ -480,80 +445,19 @@ Validación: [cómo verificar la salida].</code></pre>
     }, {passive:true});
   })();
 
-  // ===== Robust copy with graceful fallbacks =====
-  function openCopyModal(text){
-    const m = $('#copy-modal');
-    const ta = $('#copy-text');
-    ta.value = text; m.classList.add('open');
-    // autofocus + select on next tick
-    setTimeout(()=>{ ta.focus(); ta.select(); }, 0);
-    return {close(){ m.classList.remove('open'); }};
-  }
-
-  function downloadText(text, filename='contenido.txt'){
-    const blob = new Blob([text], {type:'text/plain'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = filename; document.body.appendChild(a); a.click();
-    URL.revokeObjectURL(url); a.remove();
-  }
-
-  async function safeCopy(text, opts={}){
-    const { force } = opts; // 'fallback' | 'modal'
-    try{
-      if(force === 'fallback') throw new Error('force-fallback');
-      if(force === 'modal') throw new Error('force-modal');
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        await navigator.clipboard.writeText(text);
-        return { ok:true, method:'clipboard' };
-      }
-      throw new Error('clipboard-unavailable');
-    }catch(e){
-      // try execCommand fallback
-      if(e && e.message === 'force-modal'){
-        const modal = openCopyModal(text);
-        return { ok:false, method:'modal', modal };
-      }
-      try{
-        const ta = document.createElement('textarea');
-        ta.value = text; ta.setAttribute('readonly','');
-        ta.style.position = 'absolute'; ta.style.left = '-9999px';
-        document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, ta.value.length);
-        const ok = document.execCommand && document.execCommand('copy');
-        document.body.removeChild(ta);
-        if(ok){ return { ok:true, method:'execCommand' }; }
-        // last resort: modal
-        const modal = openCopyModal(text);
-        return { ok:false, method:'modal', modal };
-      }catch(_){
-        const modal = openCopyModal(text);
-        return { ok:false, method:'modal', modal };
-      }
-    }
-  }
-
-  // Wire modal controls
-  $('#btn-close-modal').addEventListener('click', ()=> $('#copy-modal').classList.remove('open'));
-  $('#btn-select-all').addEventListener('click', ()=>{ const ta=$('#copy-text'); ta.focus(); ta.select(); toast('Seleccionado. Usa Ctrl/⌘+C'); });
-  $('#btn-download').addEventListener('click', ()=>{ const txt=$('#copy-text').value; downloadText(txt, 'prompt.txt'); });
-
-  // ===== Code block copy buttons =====
-  $$('.code .copy').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      const code = btn.nextElementSibling.textContent;
-      const res = await safeCopy(code);
-      const old = btn.textContent;
-      if(res.ok){ btn.textContent='Copiado!'; toast('Copiado al portapapeles'); }
-      else{ btn.textContent='Selecciona/Descarga'; toast('El navegador bloqueó el portapapeles'); }
-      setTimeout(()=>btn.textContent=old, 1500);
+  // copy buttons in code blocks
+  document.querySelectorAll('.code .copy').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const code = btn.nextElementSibling.textContent; navigator.clipboard.writeText(code).then(()=>{
+        const old = btn.textContent; btn.textContent='Copiado!'; setTimeout(()=>btn.textContent=old, 1100);
+      });
     });
   });
 
-  // ===== Toolbar actions =====
+  // toolbar actions
   const fw = `Rol: [experto].\nObjetivo: [qué].\nContexto: [quién/restricciones/datos].\nFormato: [tabla/JSON/lista/código].\nTono: [profesional/etc].\nValidación: [cómo se valida].`;
-  document.getElementById('btn-copy-framework')?.addEventListener('click', async ()=>{
-    const res = await safeCopy(fw);
-    toast(res.ok ? 'Framework copiado' : 'Bloqueado: abrí el modal para copiar');
+  document.getElementById('btn-copy-framework')?.addEventListener('click',()=>{
+    navigator.clipboard.writeText(fw);
   });
 
   // compact mode
@@ -563,7 +467,7 @@ Validación: [cómo verificar la salida].</code></pre>
     document.querySelectorAll('.k, .card, .code, details.ac').forEach(el=>{ el.style.padding = compact ? '10px' : ''; });
   });
 
-  // ===== Prompt builder =====
+  // prompt builder
   function build(){
     const role = document.getElementById('p-role').value?.trim();
     const tone = document.getElementById('p-tone').value;
@@ -591,42 +495,9 @@ Validación: [cómo verificar la salida].</code></pre>
     pre.textContent = out;
   }
   document.getElementById('btn-build')?.addEventListener('click', build);
-  document.getElementById('btn-copy-result')?.addEventListener('click', async ()=>{
+  document.getElementById('btn-copy-result')?.addEventListener('click',()=>{
     const txt = document.querySelector('#p-result code')?.textContent || '';
-    const res = await safeCopy(txt);
-    toast(res.ok ? 'Prompt copiado' : 'Bloqueado: usa el modal para copiar/descargar');
-  });
-
-  // ===== Autotests =====
-  function assert(name, cond){
-    const li = document.createElement('li'); li.className='step';
-    li.innerHTML = `<strong>${name}</strong> — ${cond?'<span style="color:var(--good)">PASS</span>':'<span style="color:var(--bad)">FAIL</span>'}`;
-    $('#tests-results').appendChild(li);
-    return !!cond;
-  }
-
-  $('#run-tests').addEventListener('click', async ()=>{
-    $('#tests-status').textContent = 'Running…';
-    $('#tests-results').innerHTML='';
-
-    // Test 1: safeCopy no lanza y devuelve objeto
-    let r1; try{ r1 = await safeCopy('hola test 1', { force:'fallback' }); }catch(e){ r1 = null; }
-    assert('T1: safeCopy retorna objeto', r1 && typeof r1 === 'object' && 'ok' in r1 && 'method' in r1);
-
-    // Test 2: Fallback por execCommand o modal
-    assert('T2: Método es execCommand o modal', r1 && (r1.method === 'execCommand' || r1.method === 'modal'));
-
-    // Test 3: Forzar modal muestra diálogo
-    let r3 = await safeCopy('hola modal', { force:'modal' });
-    assert('T3: Forzar modal activa diálogo', r3 && r3.method === 'modal' && $('#copy-modal').classList.contains('open'));
-    $('#btn-close-modal').click();
-
-    // Test 4: Constructor genera texto
-    build();
-    const hasText = (document.querySelector('#p-result code').textContent || '').length > 0;
-    assert('T4: Prompt builder genera salida', hasText);
-
-    $('#tests-status').textContent = 'Done';
+    navigator.clipboard.writeText(txt);
   });
 </script>
 </body>
