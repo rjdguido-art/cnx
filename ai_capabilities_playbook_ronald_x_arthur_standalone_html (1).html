@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Capabilities Playbook — Ronald x Arthur</title>
+<meta name="description" content="Guía visual e interactiva para usar ChatGPT y modelos de razonamiento. Plantillas de prompts, mejores prácticas y flujos Pro en un solo archivo."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070b17; --bg-2:#0b1224; --text:#e7ecf5; --muted:#9fb0c2;
+    --card:#0c1428; --card-2:#0f1a33; --glass:rgba(9,15,30,.55);
+    --stroke:rgba(151,177,214,.18); --accent:#60a5fa; --accent-2:#facc15;
+    --good:#22c55e; --warn:#f59e0b; --bad:#ef4444; --code:#0a1022;
+    --radius:16px; --shadow: 0 20px 60px rgba(7,11,23,.45);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--text);
+    background: radial-gradient(1200px 1000px at 15% -10%, rgba(96,165,250,.10), transparent),
+               radial-gradient(1000px 900px at 110% 10%, rgba(250,204,21,.09), transparent),
+               linear-gradient(180deg, var(--bg), var(--bg-2));
+    font: 15px/1.6 Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell, Noto Sans, Helvetica, Arial;
+    overflow-x:hidden; scroll-behavior:smooth;
+  }
+  /* animated aurora */
+  .aurora{ position:fixed; inset:-10vmax; pointer-events:none; z-index:0; filter: blur(60px); opacity:.9; }
+  .a1,.a2,.a3{ position:absolute; width:60vmax; height:60vmax; border-radius:9999px; mix-blend-mode:screen; }
+  .a1{ background: radial-gradient(circle at 40% 40%, rgba(96,165,250,.28), transparent 60%); animation: float1 20s ease-in-out infinite; left:5%; top:10%; }
+  .a2{ background: radial-gradient(circle at 60% 40%, rgba(99,102,241,.22), transparent 60%); animation: float2 26s ease-in-out infinite; right:0%; top:5%; }
+  .a3{ background: radial-gradient(circle at 50% 50%, rgba(250,204,21,.18), transparent 60%); animation: float3 28s ease-in-out infinite; left:20%; bottom:-5%; }
+  @keyframes float1{ 50%{ transform: translateY(-4%) translateX(2%) scale(1.04);} }
+  @keyframes float2{ 50%{ transform: translateY(4%) translateX(-4%) scale(1.06);} }
+  @keyframes float3{ 50%{ transform: translateY(-2%) translateX(3%) scale(1.03);} }
+
+  .wrap{ max-width:1200px; margin:0 auto; padding:26px 20px 140px; position:relative; z-index:1; }
+  .glass{ background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); border:1px solid var(--stroke); border-radius:var(--radius); box-shadow: var(--shadow); }
+
+  header.hero{ position:sticky; top:0; z-index:1000; padding:26px; backdrop-filter: blur(8px) saturate(150%);
+    background:linear-gradient(180deg, rgba(12,20,40,.85), rgba(12,20,40,.65)); border:1px solid rgba(152,186,234,.18); border-radius:20px; transition: padding .25s ease, transform .25s ease, background .3s ease; }
+  header.hero.shrink{ padding:16px 22px; background:linear-gradient(180deg, rgba(10,18,36,.92), rgba(10,18,36,.82)); }
+  .brand{ display:flex; align-items:center; gap:12px }
+  .logo{ width:32px; height:32px; border-radius:10px; background: conic-gradient(from 0deg, #60a5fa, #facc15, #7dd3fc, #a78bfa, #60a5fa); filter:saturate(120%); }
+  .title{ margin:0; font-size:22px; font-weight:800; letter-spacing:.2px; }
+  .sub{ margin:6px 0 0; color:var(--muted) }
+
+  .toolbar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:14px }
+  .chip{ background:linear-gradient(180deg, rgba(96,165,250,.16), rgba(96,165,250,.08)); border:1px solid rgba(96,165,250,.35); color:#cfe6ff; padding:.35rem .6rem; border-radius:999px; font-weight:700; font-size:12px }
+  .btn{ display:inline-flex; gap:.45rem; align-items:center; padding:.55rem .8rem; border-radius:10px; border:1px solid var(--stroke); background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); color:var(--text); cursor:pointer; user-select:none }
+  .btn:hover{ transform: translateY(-1px) }
+  .btn:active{ transform:none }
+
+  nav.toc{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin:14px 0 0 }
+  .card{ padding:16px; background:linear-gradient(180deg, rgba(12,20,40,.68), rgba(12,20,40,.5)); border:1px solid var(--stroke); border-radius:16px }
+  .card h3{ margin:0 0 6px }
+
+  h2{ font-size:26px; margin:0 0 4px }
+  section{ margin:28px 0 }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:14px }
+  .k{ padding:14px; background:linear-gradient(180deg, rgba(18,28,55,.75), rgba(12,20,40,.65)); border:1px solid var(--stroke); border-radius:14px }
+  .k .pill{ display:inline-block; font-weight:800; font-size:12px; letter-spacing:.3px; color:#c7e1ff; padding:.2rem .5rem; border-radius:999px; border:1px solid rgba(152,186,234,.35); background:rgba(96,165,250,.12) }
+  .k .desc{ color:var(--muted) }
+
+  .two{ display:grid; grid-template-columns: 1.2fr .8fr; gap:16px }
+  @media (max-width: 960px){ .two{ grid-template-columns:1fr } }
+
+  .code, pre{ background:var(--code); border:1px solid rgba(152,186,234,.22); border-radius:14px; padding:14px; overflow:auto; position:relative; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  .copy{ position:absolute; top:8px; right:8px; border:1px solid var(--stroke); background:rgba(14,22,44,.6); color:var(--text); border-radius:8px; padding:.3rem .6rem; cursor:pointer; }
+
+  details.ac{ background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02)); border:1px solid var(--stroke); border-radius:14px; padding:12px }
+  details.ac+details.ac{ margin-top:10px }
+  summary{ cursor:pointer; font-weight:800 }
+
+  .do{ background: rgba(34,197,94,.12); border-color: rgba(34,197,94,.35) }
+  .dont{ background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.35) }
+
+  .timeline{ position:relative; padding-left:24px }
+  .timeline::before{ content:""; position:absolute; left:8px; top:0; bottom:0; width:2px; background:linear-gradient(180deg, rgba(96,165,250,.6), rgba(250,204,21,.6)) }
+  .step{ margin:0 0 12px 0; padding:10px 12px; background:linear-gradient(180deg, rgba(12,20,40,.72), rgba(12,20,40,.56)); border:1px solid var(--stroke); border-radius:12px; }
+  .step .n{ font-weight:800; color:#bfdbfe }
+
+  .table{ width:100%; border-collapse: collapse; overflow:hidden; border-radius:12px; }
+  .table th, .table td{ padding:10px 12px; border-bottom:1px solid rgba(152,186,234,.18) }
+  .table thead th{ text-align:left; background:rgba(96,165,250,.08); border-bottom:1px solid rgba(96,165,250,.28) }
+
+  .footer{ position:fixed; bottom:0; left:0; width:100%; background:rgba(10,18,36,.85); border-top:1px solid var(--stroke); color:var(--muted); padding:10px 0; text-align:center; z-index:1000; box-shadow:0 -10px 30px rgba(7,11,23,.45) }
+
+  .tag{ display:inline-block; background:linear-gradient(180deg, rgba(250,204,21,.14), rgba(96,165,250,.08)); border:1px solid var(--stroke); border-radius:999px; padding:.15rem .5rem; font-size:12px; color:#ffe58f }
+
+  .composer{ padding:14px; display:grid; gap:10px }
+  .composer label{ font-weight:700; font-size:13px; color:#cfe2ff }
+  .composer textarea, .composer input, .composer select{ width:100%; background:rgba(14,22,44,.6); color:var(--text); border:1px solid var(--stroke); border-radius:10px; padding:10px; resize:vertical }
+  .composer .row{ display:grid; grid-template-columns: repeat(2, 1fr); gap:10px }
+  @media (max-width:720px){ .composer .row{ grid-template-columns:1fr } }
+
+  .kbd{ display:inline-block; padding:.1rem .4rem; border-radius:6px; border:1px solid var(--stroke); background:rgba(255,255,255,.04); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size:12px }
+
+  .notice{ border-left:3px solid var(--accent); border-radius:10px; padding:10px 12px; background:rgba(96,165,250,.08) }
+
+  .toast{ position:fixed; left:50%; bottom:80px; transform:translateX(-50%); padding:10px 14px; border-radius:10px; border:1px solid var(--stroke); background:rgba(12,20,40,.9); color:var(--text); box-shadow:var(--shadow); opacity:0; pointer-events:none; transition:opacity .22s ease; }
+  .toast.show{ opacity:1 }
+
+  /* Modal fallback for blocked clipboard */
+  .modal{ position:fixed; inset:0; background:rgba(5,8,18,.6); display:none; align-items:center; justify-content:center; z-index:2000; }
+  .modal.open{ display:flex }
+  .modal .panel{ width:min(780px,92vw); background:linear-gradient(180deg, rgba(20,28,56,.96), rgba(12,20,40,.96)); border:1px solid var(--stroke); border-radius:16px; padding:16px; box-shadow:var(--shadow) }
+  .modal h3{ margin:0 0 8px }
+  .modal p{ margin:0 0 10px; color:var(--muted) }
+  .modal textarea{ width:100%; min-height:180px; background:rgba(14,22,44,.6); color:var(--text); border:1px solid var(--stroke); border-radius:10px; padding:10px; }
+  .modal .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px }
+  .modal .actions .btn{ border-color:rgba(96,165,250,.35) }
+</style>
+</head>
+<body>
+<div class="aurora"><div class="a1"></div><div class="a2"></div><div class="a3"></div></div>
+<div class="wrap">
+  <header class="hero glass" id="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1 class="title">AI Capabilities Playbook — ChatGPT & Modelos de Razonamiento</h1>
+        <p class="sub">Manual visual para dominar prompts, flujos de trabajo y buenas prácticas. Diseñado por Arthur x Ronald.</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <span class="chip">Regla de oro: Contexto ➜ Tarea ➜ Formato ➜ Tono</span>
+      <button class="btn" id="btn-copy-framework">Copiar framework</button>
+      <button class="btn" id="btn-toggle-compact">Compact/Expand</button>
+    </div>
+    <nav class="toc">
+      <a class="card" href="#capabilities"><h3>🧠 Capacidades</h3><div class="sub">Qué puede hacer un LLM moderno</div></a>
+      <a class="card" href="#prompting"><h3>✍️ Prompting</h3><div class="sub">Frameworks + plantillas</div></a>
+      <a class="card" href="#workflows"><h3>⚙️ Workflows Pro</h3><div class="sub">Flujos paso a paso</div></a>
+      <a class="card" href="#quality"><h3>📏 Calidad</h3><div class="sub">Evaluación y control</div></a>
+      <a class="card" href="#tips"><h3>🛡️ Ética & Seguridad</h3><div class="sub">Buenas prácticas</div></a>
+      <a class="card" href="#playground"><h3>🎛️ Playground</h3><div class="sub">Creador de prompts</div></a>
+      <a class="card" href="#tests"><h3>🧪 Tests</h3><div class="sub">Autocomprobaciones</div></a>
+      <a class="card" href="#faq"><h3>❓ FAQ</h3><div class="sub">Dudas comunes</div></a>
+    </nav>
+  </header>
+
+  <!-- CAPABILITIES -->
+  <section id="capabilities">
+    <h2>🧠 Capacidades de modelos de razonamiento</h2>
+    <p class="sub">Texto, análisis, código, visión, funciones y más. Ejemplos listos para copiar. <span class="tag">Nota: si “Copiar” falla por permisos del navegador, aparecerá un modal con el texto preseleccionado y opción de descargar .txt</span></p>
+    <div class="grid">
+      <div class="k">
+        <div class="pill">Análisis de texto</div>
+        <p class="desc">Resúmenes, clasificaciones, extracción de datos, redacción y traducción con control de tono y formato.</p>
+        <pre class="code"><button class="copy">Copiar</button><code>Actúa como analista. Resume el siguiente texto en 5 viñetas y agrega riesgos y oportunidades. Formato: JSON con keys [bullets, riesgos, oportunidades]. Texto: …</code></pre>
+      </div>
+      <div class="k">
+        <div class="pill">Código & Depuración</div>
+        <p class="desc">Generación, explicación y refactor de código; casos de prueba y migraciones.</p>
+        <pre class="code"><button class="copy">Copiar</button><code>Actúa como revisor senior. Explica el siguiente error y propone fix minimal. Entrega: diff en formato unified + 3 pruebas unitarias. Código: …</code></pre>
+      </div>
+      <div class="k">
+        <div class="pill">Razonamiento estructurado</div>
+        <p class="desc">Divide problemas en pasos, planea y verifica. Pide <em>resúmenes de razonamiento</em> de alto nivel (no procesos internos).</p>
+        <pre class="code"><button class="copy">Copiar</button><code>Resuelve este problema en pasos verificables. Da un plan breve y luego la respuesta final con las comprobaciones que aplican.</code></pre>
+      </div>
+      <div class="k">
+        <div class="pill">Visión (texto+imagen)</div>
+        <p class="desc">Describe, compara, extrae texto, sugiere mejoras de diseño y QA visual.</p>
+        <pre class="code"><button class="copy">Copiar</button><code>Analiza esta captura: detecta errores de UX, ordena por severidad y propone 3 quick wins. Entrega en tabla Markdown.</code></pre>
+      </div>
+      <div class="k">
+        <div class="pill">Funciones / Herramientas</div>
+        <p class="desc">Conexión a APIs ("function calling"), bases de datos, RAG y acciones automatizadas.</p>
+        <pre class="code"><button class="copy">Copiar</button><code>Cuando necesites datos de ventas, llama a getSales({region, from, to}). Si faltan parámetros, pregúntame primero. Responde con KPIs + insights.</code></pre>
+      </div>
+      <div class="k">
+        <div class="pill">RAG (citas & fuentes)</div>
+        <p class="desc">Recupera documentos y cita fuentes. Útil para investigación, compliance y soporte.</p>
+        <pre class="code"><button class="copy">Copiar</button><code>Usa RAG sobre mi carpeta "Políticas 2025". Devuelve respuesta sintetizada + 3 citas relevantes con enlace. Señala incertidumbres.</code></pre>
+      </div>
+      <div class="k">
+        <div class="pill">Datos & Tablas</div>
+        <p class="desc">Construye tablas, valida datos, genera CSV/JSON, crea gráficos simples (cuando la herramienta lo permita).</p>
+        <pre class="code"><button class="copy">Copiar</button><code>Con este CSV, crea una tabla de 5 KPIs con definición, fórmula y ejemplo. Entrega también un dataset limpio (CSV) en tu respuesta.</code></pre>
+      </div>
+      <div class="k">
+        <div class="pill">Idiomas & Tono</div>
+        <p class="desc">Control fino sobre formalidad, jerga y estilos (marketing, académico, técnico, casual).</p>
+        <pre class="code"><button class="copy">Copiar</button><code>Reescribe este texto a tono profesional y conciso (máx. 120 palabras) y agrega una versión casual para redes.</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMPTING -->
+  <section id="prompting">
+    <h2>✍️ Prompting: frameworks y plantillas</h2>
+    <p class="sub">Arma pedidos claros y repetibles. Itera y mide.</p>
+
+    <div class="two">
+      <div class="k">
+        <div class="pill">Framework ROCFT</div>
+        <p><strong>R</strong>ol • <strong>O</strong>bjetivo • <strong>C</strong>ontexto • <strong>F</strong>ormato • <strong>T</strong>ono.</p>
+        <div class="notice">Tip: Añade <span class="kbd">"Evita contenido sensible"</span> y <span class="kbd">"Si falta info, pregunta"</span>.</div>
+        <pre class="code"><button class="copy">Copiar</button><code>Rol: [experto deseado].
+Objetivo: [qué necesitas].
+Contexto: [quién eres / restricciones / datos].
+Formato: [tabla | JSON | lista | código | bullets].
+Tono: [profesional | friendly | breve | motivador].
+Validación: [cómo verificar la salida].</code></pre>
+      </div>
+      <div class="k">
+        <div class="pill">Do / Don’t</div>
+        <div class="grid">
+          <div class="k do">
+            <strong>Haz:</strong>
+            <ul>
+              <li>Da <em>contexto suficiente</em> y ejemplos.</li>
+              <li>Pide <em>formato</em> y <em>longitud</em>.</li>
+              <li>Permite preguntas aclaratorias.</li>
+              <li>Solicita un <em>resumen del razonamiento</em> (alto nivel), no procesos internos.</li>
+            </ul>
+          </div>
+          <div class="k dont">
+            <strong>No hagas:</strong>
+            <ul>
+              <li>Pedidos vagos del tipo “hazlo mejor”.</li>
+              <li>Compartir datos sensibles sin necesidad.</li>
+              <li>Pedir cadenas de pensamiento internas.</li>
+              <li>Ignorar límites de la herramienta.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <details class="ac" open>
+      <summary>Plantillas rápidas (copiar/pegar)</summary>
+      <div class="grid">
+        <div class="k">
+          <div class="pill">Resumen ejecutivo</div>
+          <pre class="code"><button class="copy">Copiar</button><code>Actúa como analista. Resume [tema] en 6 viñetas (máx. 12 palabras c/u) + 3 riesgos + 3 oportunidades. Entrega en tabla Markdown.</code></pre>
+        </div>
+        <div class="k">
+          <div class="pill">Comparador</div>
+          <pre class="code"><button class="copy">Copiar</button><code>Compara A vs B para [caso]. Entrega: tabla de pros/cons, recomendación final y supuestos.</code></pre>
+        </div>
+        <div class="k">
+          <div class="pill">Reescritura</div>
+          <pre class="code"><button class="copy">Copiar</button><code>Reescribe este texto para [audiencia], tono [x], longitud [n palabras], con CTA final y 2 variantes de asunto.</code></pre>
+        </div>
+        <div class="k">
+          <div class="pill">Datos → Insights</div>
+          <pre class="code"><button class="copy">Copiar</button><code>Con estos datos (pegar tabla), detecta 5 insights accionables, 3 outliers y sugiere 2 experimentos A/B. Prioriza por impacto/escala.</code></pre>
+        </div>
+        <div class="k">
+          <div class="pill">QA – feedback por colores</div>
+          <pre class="code"><button class="copy">Copiar</button><code>Analiza el caso y genera feedback en 3 secciones: Verde (elogios), Amarillo (mejoras con 1 acción), Rojo (coaching con 2 acciones + seguimiento).</code></pre>
+        </div>
+        <div class="k">
+          <div class="pill">Excel/Power Apps</div>
+          <pre class="code"><button class="copy">Copiar</button><code>Proporciona 1 fórmula lista para pegar que mapee texto a categorías según keywords. Explica en 3 líneas. Debe ignorar mayúsculas/minúsculas.</code></pre>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- WORKFLOWS PRO -->
+  <section id="workflows">
+    <h2>⚙️ Workflows Pro</h2>
+    <p class="sub">Estructuras que puedes repetir para trabajo real.</p>
+    <div class="two">
+      <div class="k">
+        <div class="pill">Investigación con citas</div>
+        <ol class="timeline">
+          <li class="step"><span class="n">1.</span> Define alcance y preguntas. Pide “si falta info, pregunta”.</li>
+          <li class="step"><span class="n">2.</span> Solicita fuentes confiables y <em>citas</em>. Pide límites/incertidumbres.</li>
+          <li class="step"><span class="n">3.</span> Solicita síntesis en 2 niveles: ejecutivo y técnico.</li>
+          <li class="step"><span class="n">4.</span> Pide checklist de verificación y próximos pasos.</li>
+        </ol>
+        <pre class="code"><button class="copy">Copiar</button><code>Actúa como investigador. Explora [tema] con rigor. Entrega: 1) resumen ejecutivo, 2) 5 hallazgos con implicaciones, 3) bibliografía APA reciente, 4) límites. Si faltan datos, pregunta.</code></pre>
+      </div>
+      <div class="k">
+        <div class="pill">Productividad diaria</div>
+        <table class="table">
+          <thead><tr><th>Rutina</th><th>Prompt base</th><th>Salida</th></tr></thead>
+          <tbody>
+            <tr><td>Plan del día</td><td>Objetivos, 3 tareas clave, 2 bloques focus, 1 break.</td><td>Lista + calendario tentativo</td></tr>
+            <tr><td>Correo difícil</td><td>Contexto + tono + 2 variantes</td><td>Borradores listos</td></tr>
+            <tr><td>Revisión QA</td><td>Plantilla colores + evidencias</td><td>Feedback accionable</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUALITY -->
+  <section id="quality">
+    <h2>📏 Calidad: cómo evaluar salidas</h2>
+    <p class="sub">Define criterios y mide precisión, cobertura y utilidad.</p>
+    <div class="grid">
+      <div class="k">
+        <div class="pill">Rubrica rápida</div>
+        <table class="table">
+          <thead><tr><th>Criterio</th><th>OK</th><th>Falla común</th></tr></thead>
+          <tbody>
+            <tr><td>Relevancia</td><td>Responde exactamente a lo pedido</td><td>Divaga o ignora requisitos</td></tr>
+            <tr><td>Exactitud</td><td>Verificable / fuentes citadas</td><td>Afirmaciones sin soporte</td></tr>
+            <tr><td>Formato</td><td>Tabla/JSON/código según pedido</td><td>Entrega libre sin estructura</td></tr>
+            <tr><td>Tono</td><td>Adecuado a audiencia</td><td>Muy técnico o muy casual</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="k">
+        <div class="pill">Iteración</div>
+        <ul>
+          <li>Si la salida no sirve: especifica qué faltó.</li>
+          <li>Pide un <em>delta</em> vs. versión anterior.</li>
+          <li>Guarda tus mejores prompts como plantillas.</li>
+        </ul>
+        <pre class="code"><button class="copy">Copiar</button><code>Repite la respuesta incorporando estos cambios: [lista]. Explica qué modificaste (máx. 5 viñetas). Mantén el mismo formato.</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ETHICS & SAFETY -->
+  <section id="tips">
+    <h2>🛡️ Ética & Seguridad</h2>
+    <p class="sub">Protege datos, respeta límites y documenta supuestos.</p>
+    <div class="grid">
+      <div class="k">
+        <div class="pill">Privacidad</div>
+        <ul>
+          <li>Minimiza datos personales; anonimiza cuando puedas.</li>
+          <li>Evita subir credenciales o PII. Usa variables simuladas.</li>
+          <li>Revisa políticas de tu empresa antes de compartir.</li>
+        </ul>
+      </div>
+      <div class="k">
+        <div class="pill">Transparencia</div>
+        <ul>
+          <li>Declara fuentes, supuestos y límites.</li>
+          <li>Para temas sensibles, pide verificación humana.</li>
+          <li>No solicites cadenas de pensamiento internas.</li>
+        </ul>
+      </div>
+      <div class="k">
+        <div class="pill">Evitar sesgos</div>
+        <ul>
+          <li>Solicita perspectivas múltiples.</li>
+          <li>Incluye criterios objetivos y escenarios contrarios.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAYGROUND -->
+  <section id="playground">
+    <h2>🎛️ Prompt Playground (constructor)</h2>
+    <p class="sub">Arma tu prompt con bloques y cópialo listo.</p>
+    <div class="k composer">
+      <div class="row">
+        <div>
+          <label>Rol</label>
+          <input id="p-role" placeholder="p.ej., Experto en QA, Analista de datos, Redactor técnico" />
+        </div>
+        <div>
+          <label>Tono</label>
+          <select id="p-tone">
+            <option value="profesional">Profesional</option>
+            <option value="amigable">Amigable</option>
+            <option value="conciso">Conciso</option>
+            <option value="inspirador">Inspirador</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label>Objetivo</label>
+        <input id="p-goal" placeholder="¿Qué necesitas lograr?" />
+      </div>
+      <div>
+        <label>Contexto</label>
+        <textarea id="p-context" rows="3" placeholder="Quién eres, restricciones, datos relevantes…"></textarea>
+      </div>
+      <div class="row">
+        <div>
+          <label>Formato esperado</label>
+          <input id="p-format" placeholder="Tabla | JSON | Bullets | Código | Mixto" />
+        </div>
+        <div>
+          <label>Validación</label>
+          <input id="p-validate" placeholder="Cómo verificar la salida" />
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Longitud</label>
+          <input id="p-length" placeholder="máx. 200 palabras, 6 viñetas, etc." />
+        </div>
+        <div>
+          <label>Idioma</label>
+          <input id="p-lang" value="es" />
+        </div>
+      </div>
+      <div>
+        <label>Extras (opcional)</label>
+        <input id="p-extras" placeholder="Si falta info, pregunta • Evita contenido sensible • Usa citas si aplican" />
+      </div>
+      <div class="toolbar">
+        <button class="btn" id="btn-build">Construir prompt</button>
+        <button class="btn" id="btn-copy-result">Copiar resultado</button>
+        <span class="tag">Consejo: guarda tus presets como snippets</span>
+      </div>
+      <pre id="p-result" class="code" aria-live="polite"><code></code></pre>
+    </div>
+  </section>
+
+  <!-- TESTS -->
+  <section id="tests">
+    <h2>🧪 Autotests (no cambies estos casos)</h2>
+    <p class="sub">Validan que el botón de “Copiar” nunca rompa en entornos con políticas restrictivas.</p>
+    <div class="k">
+      <div class="toolbar">
+        <button class="btn" id="run-tests">Run tests</button>
+        <span id="tests-status" class="tag">Idle</span>
+      </div>
+      <ol id="tests-results" class="timeline" aria-live="polite"></ol>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <h2>❓ FAQ</h2>
+    <details class="ac" open>
+      <summary>¿Cómo logro respuestas más precisas?</summary>
+      <p>Define el objetivo, da contexto específico, exige formato y longitud, permite preguntas y pide un <em>resumen del razonamiento</em> de alto nivel para entender el enfoque.</p>
+    </details>
+    <details class="ac">
+      <summary>¿Cuándo usar RAG o funciones?</summary>
+      <p>Cuando necesitas datos de tus documentos, bases o APIs. Pide citas, maneja errores y valida entradas.</p>
+    </details>
+    <details class="ac">
+      <summary>¿Cómo iterar sin perder el control?</summary>
+      <p>Trabaja en versiones. Pide un delta entre versiones, registra supuestos y bloquea el formato.</p>
+    </details>
+  </section>
+
+</div>
+
+<footer class="footer">Creado por Arthur y Ronald — Hecho con cariño por Arthur 💙 Amarillo x Azul vibes • v2.1 — Agosto 2025</footer>
+
+<div class="toast" role="status" aria-live="polite" id="toast"></div>
+<div class="modal" id="copy-modal" aria-modal="true" role="dialog" aria-labelledby="copy-title">
+  <div class="panel">
+    <h3 id="copy-title">Permiso denegado para copiar automáticamente</h3>
+    <p>Tu navegador o política de la página bloqueó el portapapeles. Te dejamos el texto preseleccionado; presiona <span class="kbd">Ctrl/⌘ + C</span> para copiar, o descárgalo como .txt.</p>
+    <textarea id="copy-text" readonly></textarea>
+    <div class="actions">
+      <button class="btn" id="btn-select-all">Seleccionar todo</button>
+      <button class="btn" id="btn-download">Descargar .txt</button>
+      <button class="btn" id="btn-close-modal">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== UI helpers =====
+  const $ = (q,root=document)=>root.querySelector(q);
+  const $$ = (q,root=document)=>Array.from(root.querySelectorAll(q));
+  const toastEl = $('#toast');
+  function toast(msg){ toastEl.textContent = msg; toastEl.classList.add('show'); setTimeout(()=>toastEl.classList.remove('show'), 1600); }
+
+  // ===== Header shrink on scroll =====
+  (function(){
+    const h = document.querySelector('header.hero');
+    let last = 0; const t = 8;
+    window.addEventListener('scroll', ()=>{
+      const y = scrollY || 0; h.classList.toggle('shrink', y>10);
+      if(y>last+t && y>140){ h.style.transform='translateY(-120%)'; }
+      else if(y<last-t){ h.style.transform=''; }
+      last=y;
+    }, {passive:true});
+  })();
+
+  // ===== Robust copy with graceful fallbacks =====
+  function openCopyModal(text){
+    const m = $('#copy-modal');
+    const ta = $('#copy-text');
+    ta.value = text; m.classList.add('open');
+    // autofocus + select on next tick
+    setTimeout(()=>{ ta.focus(); ta.select(); }, 0);
+    return {close(){ m.classList.remove('open'); }};
+  }
+
+  function downloadText(text, filename='contenido.txt'){
+    const blob = new Blob([text], {type:'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; document.body.appendChild(a); a.click();
+    URL.revokeObjectURL(url); a.remove();
+  }
+
+  async function safeCopy(text, opts={}){
+    const { force } = opts; // 'fallback' | 'modal'
+    try{
+      if(force === 'fallback') throw new Error('force-fallback');
+      if(force === 'modal') throw new Error('force-modal');
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(text);
+        return { ok:true, method:'clipboard' };
+      }
+      throw new Error('clipboard-unavailable');
+    }catch(e){
+      // try execCommand fallback
+      if(e && e.message === 'force-modal'){
+        const modal = openCopyModal(text);
+        return { ok:false, method:'modal', modal };
+      }
+      try{
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.setAttribute('readonly','');
+        ta.style.position = 'absolute'; ta.style.left = '-9999px';
+        document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, ta.value.length);
+        const ok = document.execCommand && document.execCommand('copy');
+        document.body.removeChild(ta);
+        if(ok){ return { ok:true, method:'execCommand' }; }
+        // last resort: modal
+        const modal = openCopyModal(text);
+        return { ok:false, method:'modal', modal };
+      }catch(_){
+        const modal = openCopyModal(text);
+        return { ok:false, method:'modal', modal };
+      }
+    }
+  }
+
+  // Wire modal controls
+  $('#btn-close-modal').addEventListener('click', ()=> $('#copy-modal').classList.remove('open'));
+  $('#btn-select-all').addEventListener('click', ()=>{ const ta=$('#copy-text'); ta.focus(); ta.select(); toast('Seleccionado. Usa Ctrl/⌘+C'); });
+  $('#btn-download').addEventListener('click', ()=>{ const txt=$('#copy-text').value; downloadText(txt, 'prompt.txt'); });
+
+  // ===== Code block copy buttons =====
+  $$('.code .copy').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const code = btn.nextElementSibling.textContent;
+      const res = await safeCopy(code);
+      const old = btn.textContent;
+      if(res.ok){ btn.textContent='Copiado!'; toast('Copiado al portapapeles'); }
+      else{ btn.textContent='Selecciona/Descarga'; toast('El navegador bloqueó el portapapeles'); }
+      setTimeout(()=>btn.textContent=old, 1500);
+    });
+  });
+
+  // ===== Toolbar actions =====
+  const fw = `Rol: [experto].\nObjetivo: [qué].\nContexto: [quién/restricciones/datos].\nFormato: [tabla/JSON/lista/código].\nTono: [profesional/etc].\nValidación: [cómo se valida].`;
+  document.getElementById('btn-copy-framework')?.addEventListener('click', async ()=>{
+    const res = await safeCopy(fw);
+    toast(res.ok ? 'Framework copiado' : 'Bloqueado: abrí el modal para copiar');
+  });
+
+  // compact mode
+  let compact=false;
+  document.getElementById('btn-toggle-compact')?.addEventListener('click',()=>{
+    compact=!compact; document.body.style.setProperty('--radius', compact?'12px':'16px');
+    document.querySelectorAll('.k, .card, .code, details.ac').forEach(el=>{ el.style.padding = compact ? '10px' : ''; });
+  });
+
+  // ===== Prompt builder =====
+  function build(){
+    const role = document.getElementById('p-role').value?.trim();
+    const tone = document.getElementById('p-tone').value;
+    const goal = document.getElementById('p-goal').value?.trim();
+    const context = document.getElementById('p-context').value?.trim();
+    const format = document.getElementById('p-format').value?.trim();
+    const validate = document.getElementById('p-validate').value?.trim();
+    const length = document.getElementById('p-length').value?.trim();
+    const lang = document.getElementById('p-lang').value?.trim() || 'es';
+    const extras = document.getElementById('p-extras').value?.trim();
+
+    const lines = [];
+    if(role) lines.push(`Actúa como ${role}.`);
+    if(goal) lines.push(`Objetivo: ${goal}`);
+    if(context) lines.push(`Contexto: ${context}`);
+    if(format) lines.push(`Formato: ${format}`);
+    if(length) lines.push(`Longitud: ${length}`);
+    if(tone) lines.push(`Tono: ${tone}`);
+    if(validate) lines.push(`Validación: ${validate}`);
+    if(extras) lines.push(extras);
+    lines.push(`Idioma: ${lang}`);
+
+    const out = lines.join('\n');
+    const pre = document.querySelector('#p-result code');
+    pre.textContent = out;
+  }
+  document.getElementById('btn-build')?.addEventListener('click', build);
+  document.getElementById('btn-copy-result')?.addEventListener('click', async ()=>{
+    const txt = document.querySelector('#p-result code')?.textContent || '';
+    const res = await safeCopy(txt);
+    toast(res.ok ? 'Prompt copiado' : 'Bloqueado: usa el modal para copiar/descargar');
+  });
+
+  // ===== Autotests =====
+  function assert(name, cond){
+    const li = document.createElement('li'); li.className='step';
+    li.innerHTML = `<strong>${name}</strong> — ${cond?'<span style="color:var(--good)">PASS</span>':'<span style="color:var(--bad)">FAIL</span>'}`;
+    $('#tests-results').appendChild(li);
+    return !!cond;
+  }
+
+  $('#run-tests').addEventListener('click', async ()=>{
+    $('#tests-status').textContent = 'Running…';
+    $('#tests-results').innerHTML='';
+
+    // Test 1: safeCopy no lanza y devuelve objeto
+    let r1; try{ r1 = await safeCopy('hola test 1', { force:'fallback' }); }catch(e){ r1 = null; }
+    assert('T1: safeCopy retorna objeto', r1 && typeof r1 === 'object' && 'ok' in r1 && 'method' in r1);
+
+    // Test 2: Fallback por execCommand o modal
+    assert('T2: Método es execCommand o modal', r1 && (r1.method === 'execCommand' || r1.method === 'modal'));
+
+    // Test 3: Forzar modal muestra diálogo
+    let r3 = await safeCopy('hola modal', { force:'modal' });
+    assert('T3: Forzar modal activa diálogo', r3 && r3.method === 'modal' && $('#copy-modal').classList.contains('open'));
+    $('#btn-close-modal').click();
+
+    // Test 4: Constructor genera texto
+    build();
+    const hasText = (document.querySelector('#p-result code').textContent || '').length > 0;
+    assert('T4: Prompt builder genera salida', hasText);
+
+    $('#tests-status').textContent = 'Done';
+  });
+</script>
+</body>
+</html>
