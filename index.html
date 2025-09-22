@@ -1,390 +1,415 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AI Capabilities Playbook</title>
-<meta name="description" content="Guía visual e interactiva para usar modelos de razonamiento (ChatGPT o similares): plantillas, mejores prácticas y flujos pro, en un solo archivo."/>
-
-<!-- PERF: preconnect for Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- PERF: only needed weights + display=swap -->
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-
-<style>
-  :root{
-    /* Palette (pedido) */
-    --primary:#1E3A8A; /* Dark blue */
-    --teal:#14B8A6;
-    --teal-2:#6EE7B7;
-    --yellow:#FACC15;
-    --orange:#F97316;
-    --magenta:#EC4899;
-
-    /* Theme */
-    --bg:#F3F4F6;         /* Light gray background */
-    --bg-2:#FFFFFF;
-    --text:#0F172A;       /* Slate-900 */
-    --muted:#475569;      /* Slate-600 */
-    --card:#FFFFFF;
-    --card-2:#F8FAFC;
-    --glass:rgba(255,255,255,.75);
-    --stroke:rgba(2,6,23,.10);
-    --accent: var(--teal);
-    --accent-2: var(--yellow);
-    --good:#16A34A;
-    --warn:#F59E0B;
-    --bad:#DC2626;
-    --code:rgba(15,23,42,.06);
-    --radius:16px;
-    --shadow: 0 20px 50px rgba(2,6,23,.08);
-  }
-
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; color:var(--text);
-    background:
-      radial-gradient(900px 700px at 10% -10%, rgba(20,184,166,.08), transparent),
-      radial-gradient(700px 600px at 110% 10%, rgba(236,72,153,.06), transparent),
-      linear-gradient(180deg, var(--bg), var(--bg-2));
-    font: 15px/1.65 "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial;
-    overflow-x:hidden; scroll-behavior:smooth;
-  }
-
-  /* animated aurora (soft for perf) */
-  .aurora{ position:fixed; inset:-10vmax; pointer-events:none; z-index:0; filter: blur(60px); opacity:.45; }
-  .a1,.a2,.a3{ position:absolute; width:60vmax; height:60vmax; border-radius:9999px; mix-blend-mode:screen; will-change:transform; }
-  .a1{ background: radial-gradient(circle at 40% 40%, rgba(20,184,166,.28), transparent 60%); animation: float1 20s ease-in-out infinite; left:5%; top:10%; }
-  .a2{ background: radial-gradient(circle at 60% 40%, rgba(30,58,138,.22), transparent 60%); animation: float2 26s ease-in-out infinite; right:0%; top:5%; }
-  .a3{ background: radial-gradient(circle at 50% 50%, rgba(236,72,153,.18), transparent 60%); animation: float3 28s ease-in-out infinite; left:20%; bottom:-5%; }
-  @keyframes float1{ 50%{ transform: translateY(-4%) translateX(2%) scale(1.04);} }
-  @keyframes float2{ 50%{ transform: translateY(4%) translateX(-4%) scale(1.06);} }
-  @keyframes float3{ 50%{ transform: translateY(-2%) translateX(3%) scale(1.03);} }
-  @media (prefers-reduced-motion: reduce){ .a1,.a2,.a3{ animation:none } .aurora{ filter: blur(40px); } }
-
-  .wrap{ max-width:1200px; margin:0 auto; padding:26px 20px 120px; position:relative; z-index:1; }
-  .glass{ background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.92)); border:1px solid var(--stroke); border-radius:var(--radius); box-shadow: var(--shadow); }
-
-  /* Header with tabbar mode */
-  header.hero{ position:sticky; top:0; z-index:1000; padding:24px; backdrop-filter: blur(10px) saturate(160%); transition: padding .25s ease, transform .25s ease, background .3s ease; }
-  header.hero.shrink{ padding:16px 20px; }
-  header.hero.hide{ transform: translateY(-120%); }
-  header.hero.tabbar{
-    padding:10px 16px;
-    background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.92));
-    border:1px solid var(--stroke);
-  }
-  .brand{ display:flex; align-items:center; gap:12px }
-  .logo{ width:32px; height:32px; border-radius:10px; background: conic-gradient(from 0deg, var(--primary), var(--yellow), var(--teal-2), var(--magenta), var(--primary)); filter:saturate(120%); }
-  .title{ margin:0; font-size:22px; font-weight:800; letter-spacing:.2px; color:var(--primary) }
-  .sub{ margin:6px 0 0; color:var(--muted) }
-
-  .toolbar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:14px }
-  .chip{ background:linear-gradient(180deg, rgba(20,184,166,.16), rgba(20,184,166,.08)); border:1px solid rgba(20,184,166,.28); color:#065F46; padding:.35rem .6rem; border-radius:999px; font-weight:700; font-size:12px }
-  .btn{ display:inline-flex; gap:.45rem; align-items:center; padding:.55rem .8rem; border-radius:10px; border:1px solid var(--stroke); background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.8)); color:var(--text); cursor:pointer; user-select:none }
-  .btn:hover{ box-shadow:0 8px 18px rgba(2,6,23,.06) }
-  .btn:active{ transform:none }
-
-  nav.toc{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin:14px 0 0 }
-  .card{ padding:16px; background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.88)); border:1px solid var(--stroke); border-radius:16px }
-  .card h3{ margin:0 0 6px }
-
-  h2{ font-size:26px; margin:0 0 4px; color:var(--primary) }
-  section{ margin:28px 0; content-visibility:auto; contain-intrinsic-size: 600px; }
-  .grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:14px }
-  .k{ padding:14px; background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.88)); border:1px solid var(--stroke); border-radius:14px; box-shadow: 0 10px 24px rgba(2,6,23,.04) }
-  .k .pill{ display:inline-block; font-weight:800; font-size:12px; letter-spacing:.3px; color:var(--primary); padding:.2rem .5rem; border-radius:999px; border:1px solid rgba(30,58,138,.25); background:rgba(20,184,166,.12) }
-  .k .desc{ color:var(--muted) }
-
-  .two{ display:grid; grid-template-columns: 1.2fr .8fr; gap:16px }
-  @media (max-width: 960px){ .two{ grid-template-columns:1fr } }
-
-  .code, pre{ background:var(--code); border:1px solid var(--stroke); border-radius:14px; padding:14px; overflow:auto; position:relative; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-  .copy{ position:absolute; top:8px; right:8px; border:1px solid var(--stroke); background:rgba(2,6,23,.05); color:var(--text); border-radius:8px; padding:.3rem .6rem; cursor:pointer; }
-
-  details.ac{ background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.96)); border:1px solid var(--stroke); border-radius:14px; padding:12px }
-  details.ac+details.ac{ margin-top:10px }
-  summary{ cursor:pointer; font-weight:800 }
-
-  .do{ background: rgba(22,163,74,.12); border-color: rgba(22,163,74,.28) }
-  .dont{ background: rgba(220,38,38,.12); border-color: rgba(220,38,38,.28) }
-
-  .timeline{ position:relative; padding-left:24px }
-  .timeline::before{ content:""; position:absolute; left:8px; top:0; bottom:0; width:2px; background:linear-gradient(180deg, var(--teal), var(--yellow)) }
-  .step{ margin:0 0 12px 0; padding:10px 12px; background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.88)); border:1px solid var(--stroke); border-radius:12px; }
-  .step .n{ font-weight:800; color:var(--primary) }
-
-  .table{ width:100%; border-collapse: collapse; overflow:hidden; border-radius:12px; }
-  .table th, .table td{ padding:10px 12px; border-bottom:1px solid rgba(2,6,23,.10) }
-  .table thead th{ text-align:left; background:rgba(20,184,166,.08); border-bottom:1px solid rgba(20,184,166,.28) }
-
-  /* Tabs shown in tabbar mode */
-  .tabs{ display:none; gap:8px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding:8px 0 0; }
-  .tabs a{
-    display:inline-flex; align-items:center; white-space:nowrap;
-    padding:.45rem .7rem; border-radius:999px; border:1px solid var(--stroke);
-    background:linear-gradient(180deg, rgba(255,255,255,.8), rgba(255,255,255,.7));
-    color:var(--primary); font-weight:700; text-decoration:none;
-  }
-  .tabs a:hover{ background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.85)); }
-
-  header.hero.tabbar .brand .sub,
-  header.hero.tabbar .toolbar,
-  header.hero.tabbar .toc{ display:none !important; }
-  header.hero.tabbar .title{ font-size:16px; color:var(--primary); }
-  header.hero.tabbar .tabs{ display:flex; }
-
-  /* Contact section (replaces fixed footer UX) */
-  footer.footer{
-    position: static; width:100%; margin:32px 0 0; padding:28px 20px;
-    background:linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,1));
-    border-top:1px solid var(--stroke); color:var(--muted); text-align:left; box-shadow:none;
-    border-radius:16px; 
-  }
-  footer.footer .wrap-inner{ max-width:1200px; margin:0 auto; display:grid; gap:12px;
-    grid-template-columns: 1.2fr .8fr; align-items:start; }
-  footer.footer h3{ margin:0 0 6px; color:var(--primary) }
-  footer.footer a{ color:var(--primary); text-decoration:none; font-weight:600 }
-  footer.footer a:hover{ text-decoration:underline }
-  @media (max-width: 960px){ footer.footer .wrap-inner{ grid-template-columns:1fr } }
-
-  /* Graceful fallback if backdrop-filter unsupported */
-  @supports not ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
-    header.hero{ background: rgba(255,255,255,.98); }
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Matriz Disciplinaria</title>
+  <style>
+    :root {
+      --cn-teal: #38b2ac;
+      --cn-gray-light: #e2e8f0;
+      --cn-gray-medium: #a0aec0;
+      --cn-gray-dark: #4a5568;
+      --cn-white: #ffffff;
+      --cn-black: #2d3748;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      color: var(--cn-black);
+      background-color: var(--cn-gray-light);
+    }
+    h1 {
+      text-align: center;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .controls input[type="text"] {
+      flex: 1;
+      min-width: 200px;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--cn-gray-medium);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+    }
+    .controls select,
+    .controls button {
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--cn-gray-medium);
+      background-color: var(--cn-white);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .controls select:focus,
+    .controls input[type="text"]:focus {
+      outline: none;
+      border-color: var(--cn-teal);
+      box-shadow: 0 0 0 2px rgba(56, 178, 172, 0.3);
+    }
+    .controls button:hover {
+      background-color: var(--cn-teal);
+      color: var(--cn-white);
+      border-color: var(--cn-teal);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: var(--cn-white);
+      border: 1px solid var(--cn-gray-medium);
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--cn-gray-light);
+      text-align: left;
+    }
+    th {
+      background-color: var(--cn-gray-medium);
+      color: var(--cn-white);
+    }
+    tr:nth-child(even) {
+      background-color: var(--cn-gray-light);
+    }
+    tr:hover {
+      background-color: #edf2f7;
+    }
+    .severity-Leve {
+      color: #2f855a;
+    }
+    .severity-Grave {
+      color: #dd6b20;
+    }
+    .severity-MuyGrave {
+      color: #c53030;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.85rem;
+      background-color: var(--cn-gray-medium);
+      color: var(--cn-white);
+    }
+  </style>
 </head>
 <body>
-<div class="aurora"><div class="a1"></div><div class="a2"></div><div class="a3"></div></div>
-<div class="wrap">
-  <header class="hero glass" id="top">
-    <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <div>
-        <h1 class="title">AI Capabilities Playbook — Modelos de Razonamiento</h1>
-        <p class="sub">Manual visual para dominar prompts, flujos de trabajo y buenas prácticas.</p>
-      </div>
-    </div>
-    <div class="toolbar">
-      <span class="chip">Regla de oro: Contexto ➜ Tarea ➜ Formato ➜ Tono</span>
-      <button class="btn" id="btn-copy-framework">Copiar framework</button>
-      <button class="btn" id="btn-toggle-compact">Compact/Expand</button>
-    </div>
 
-    <!-- Tab manager (visible en modo tabbar) -->
-    <nav class="tabs" aria-label="Secciones">
-      <a href="#capabilities">Capacidades</a>
-      <a href="#prompting">Prompting</a>
-      <a href="#workflows">Workflows</a>
-      <a href="#quality">Calidad</a>
-      <a href="#tips">Ética</a>
-      <a href="#playground">Playground</a>
-      <a href="#faq">FAQ</a>
-    </nav>
+  <h1>Matriz Disciplinaria</h1>
 
-    <!-- Tarjetas principales -->
-    <nav class="toc">
-      <a class="card" href="#capabilities"><h3>🧠 Capacidades</h3><div class="sub">Qué puede hacer un LLM moderno</div></a>
-      <a class="card" href="#prompting"><h3>✍️ Prompting</h3><div class="sub">Frameworks + plantillas</div></a>
-      <a class="card" href="#workflows"><h3>⚙️ Workflows Pro</h3><div class="sub">Flujos paso a paso</div></a>
-      <a class="card" href="#quality"><h3>📏 Calidad</h3><div class="sub">Evaluación y control</div></a>
-      <a class="card" href="#tips"><h3>🛡️ Ética & Seguridad</h3><div class="sub">Buenas prácticas</div></a>
-      <a class="card" href="#playground"><h3>🎛️ Playground</h3><div class="sub">Creador de prompts</div></a>
-      <a class="card" href="#faq"><h3>❓ FAQ</h3><div class="sub">Dudas comunes</div></a>
-    </nav>
-  </header>
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="Buscar artículo, infracción...">
+    <select id="severitySelect">
+      <option value="Todas">Todas severidades</option>
+      <option value="Leve">Leve</option>
+      <option value="Grave">Grave</option>
+      <option value="Muy grave">Muy grave</option>
+    </select>
+    <select id="categorySelect">
+      <option value="Todas">Todas categorías</option>
+      <!-- Las opciones se llenarán dinámicamente -->
+    </select>
+    <button id="clearBtn">Limpiar filtros</button>
+  </div>
 
-  <!-- CAPABILITIES -->
-  <section id="capabilities">
-    <h2>🧠 Capacidades de modelos de razonamiento</h2>
-    <p class="sub">Texto, análisis, código, visión, funciones y más. Ejemplos listos para copiar.</p>
-    <div class="grid">
-      <div class="k">
-        <div class="pill">Análisis de texto</div>
-        <p class="desc">Resúmenes, clasificaciones, extracción de datos, redacción y traducción con control de tono y formato.</p>
-        <pre class="code"><button class="copy">Copiar</button><code>Actúa como analista. Resume el siguiente texto en 5 viñetas y agrega riesgos y oportunidades. Formato: JSON con keys [bullets, riesgos, oportunidades]. Texto: …</code></pre>
-      </div>
-      <div class="k">
-        <div class="pill">Código & Depuración</div>
-        <p class="desc">Generación, explicación y refactor de código; casos de prueba y migraciones.</p>
-        <pre class="code"><button class="copy">Copiar</button><code>Actúa como revisor senior. Explica el siguiente error y propone fix minimal. Entrega: diff en formato unified + 3 pruebas unitarias. Código: …</code></pre>
-      </div>
-      <div class="k">
-        <div class="pill">Razonamiento estructurado</div>
-        <p class="desc">Divide problemas en pasos, planea y verifica. Pide resúmenes de razonamiento de alto nivel.</p>
-        <pre class="code"><button class="copy">Copiar</button><code>Resuelve este problema en pasos verificables. Da un plan breve y luego la respuesta final con comprobaciones.</code></pre>
-      </div>
-      <div class="k">
-        <div class="pill">Visión (texto+imagen)</div>
-        <p class="desc">Describe, compara, extrae texto, sugiere mejoras de diseño y QA visual.</p>
-        <pre class="code"><button class="copy">Copiar</button><code>Analiza esta captura: detecta errores de UX, ordena por severidad y propone 3 quick wins. Entrega en tabla Markdown.</code></pre>
-      </div>
-      <div class="k">
-        <div class="pill">Funciones / Herramientas</div>
-        <p class="desc">Conexión a APIs (function calling), bases de datos, RAG y acciones automatizadas.</p>
-        <pre class="code"><button class="copy">Copiar</button><code>Cuando necesites datos de ventas, llama a getSales({region, from, to}). Si faltan parámetros, pregúntame primero. Responde con KPIs + insights.</code></pre>
-      </div>
-      <div class="k">
-        <div class="pill">RAG (citas & fuentes)</div>
-        <p class="desc">Recupera documentos y cita fuentes. Útil para investigación, compliance y soporte.</p>
-        <pre class="code"><button class="copy">Copiar</button><code>Usa RAG sobre mi carpeta "Políticas 2025". Devuelve respuesta + 3 citas relevantes con enlace. Señala incertidumbres.</code></pre>
-      </div>
-      <div class="k">
-        <div class="pill">Datos & Tablas</div>
-        <p class="desc">Construye tablas, valida datos, genera CSV/JSON, crea gráficos simples.</p>
-        <pre class="code"><button class="copy">Copiar</button><code>Con este CSV, crea una tabla de 5 KPIs con definición, fórmula y ejemplo. Entrega también un dataset limpio (CSV).</code></pre>
-      </div>
-      <div class="k">
-        <div class="pill">Idiomas & Tono</div>
-        <p class="desc">Control sobre formalidad, jerga y estilos (marketing, académico, técnico, casual).</p>
-        <pre class="code"><button class="copy">Copiar</button><code>Reescribe este texto a tono profesional y conciso (máx. 120 palabras) y agrega una versión casual para redes.</code></pre>
-      </div>
-    </div>
-  </section>
+  <table>
+    <thead>
+      <tr>
+        <th>Artículo</th>
+        <th>Infracción</th>
+        <th>Severidad</th>
+        <th>Categoría</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <!-- Filas se generan dinámicamente -->
+    </tbody>
+  </table>
 
-  <!-- PROMPTING -->
-  <section id="prompting">
-    <h2>✍️ Prompting: frameworks y plantillas</h2>
-    <p class="sub">Arma pedidos claros y repetibles. Itera y mide.</p>
+  <script>
+    // Array completo de datos
+    const disciplinaryMatrix = [
+      { article: "A.1.1", infraction: "La participación o promoción, dentro de las instalaciones de la Empresa de cualquier forma de juego, loterías, juegos de azar, rafas, ventas, solicitar o recolectar contribuciones para cualquier fin, en cualquier momento, dentro de las instalaciones de la Empresa o por canal corporativo.", severity: "Leve" },
+      { article: "A.1.2", infraction: "Ingresar a la Empresa en horas o días no laborales, por subsidio, incapacidad, suspensión, vacaciones u otra licencia.", severity: "Leve" },
+      { article: "A.1.3", infraction: "Promover, proponer, o practicar el préstamo de dinero con fines de lucro o beneficio personal dentro de las instalaciones de la Empresa, o tomando ventaja del cargo/posición que ocupa.", severity: "Leve" },
+      { article: "A.1.4", infraction: "Injustificada omisión del uso de la identificación dentro de las instalaciones de la Empresa.", severity: "Leve" },
+      { article: "A.1.5", infraction: "Cometer actos contra la sanidad, limpieza y las normas de tráfico, y estacionamiento dentro de instalaciones de la Empresa.", severity: "Leve" },
+      { article: "A.1.6", infraction: "Violación del Código de Uso de Vestimenta establecido.", severity: "Leve" },
+      { article: "A.1.7", infraction: "Uso de computadoras de la Empresa (incluyendo, pero no limitado a equipos de escritorio, portátiles, y servidores) para actividades no relacionadas con el trabajo, como jugar, navegar, chatear, etc.", severity: "Leve" },
+      { article: "A.1.8", infraction: "Uso inadecuado de identificación personal, incluyendo, pero no limitado a: no portar tarjeta de identificación (Badge), permitir la entrada de alguien que no ande su tarjeta, no marcar con su tarjeta en el control de acceso (Tailgating), Etc.", severity: "Leve" },
+      { article: "A.1.9", infraction: "Cambiar la configuración física de las estaciones de trabajo (incluyendo, pero no limitado CPUs, monitores, amplificadores, teléfonos IP, auriculares, UPS, etiquetas del ordenador).", severity: "Leve" },
+      { article: "A.1.10", infraction: "Ingerir alimentos de cualquier tipo en áreas restringidas, incluyendo, pero no limitado a pisos de producción, oficinas administrativas, áreas de entrenamiento, etc.", severity: "Leve" },
+      { article: "A.1.11", infraction: "Seguir a otra persona a través de puntos de control de seguridad sin ser revisado (también conocido como 'colarse') u obtener acceso a áreas restringidas mediante representación falsa o fraude.", severity: "Leve" },
+      { article: "A.1.12", infraction: "Seguir a otra persona a través de puntos de control de seguridad sin ser revisado (también conocido como 'colarse') u obtener acceso a áreas restringidas mediante representación falsa o fraude.", severity: "Leve" },
+      { article: "A.1.13", infraction: "Falta de registro y acompañamiento de invitados/visitantes en lugares donde la Compañía realiza negocios.", severity: "Leve" },
+      { article: "A.1.14", infraction: "Fallo en completar con éxito la capacitación obligatoria derivada de una simulación de phishing fallida o de un ataque de ciberseguridad real.", severity: "Leve" },
+      { article: "A.1.15", infraction: "Simulación de phishing fallida o ataque real de ciberseguridad, De 2 - 4 semanas de vencido, aplica AV y De 4 - 6 semanas de vencido, aplica AE", severity: "Leve" },
+      { article: "A.1.16", infraction: "Incumplimiento o atraso en el alcance o cumplimiento de proyectos que le han sido asignados, además de las tareas regulares (ej: certificación Lean Six Sigma, requisito de cumplimiento ISO).", severity: "Leve" },
+      { article: "A.1.17", infraction: "Presentarse tarde a su turno, en dos ocasiones durante un mes, incluyendo retorno de almuerzos o descanso.", severity: "Leve" },
+      { article: "A.1.18", infraction: "No marcar el control de entrada/salida en el sistema correspondiente en dos ocasiones durante una misma semana.", severity: "Leve" },
+      { article: "A.1.19", infraction: "No presentarse a realizar las horas extra voluntariamente acordadas y previamente aprobadas, afectando la buena marcha y productividad de la empresa – sin razón válida.", severity: "Leve" },
+      { article: "A.1.20", infraction: "No informar a su jefe inmediato, o en su defecto a Recursos Humanos, las razones de su ausencia o llegada tarde, en las primeras dos horas del día laboral.", severity: "Leve" },
+      { article: "B.1.1", infraction: "Publicación no autorizada, eliminación o alteración de documentos oficiales publicados en la tabla de avisos de la empresa.", severity: "Grave" },
+      { article: "B.1.2", infraction: "Ingresar o permitir que personas no autorizadas ingresen en áreas restringidas sin causas justificadas, incluyendo, pero no limitado a ingresar a un piso de producción que no es de tu cuenta, oficina de IT, etc.", severity: "Grave" },
+      { article: "B.1.3", infraction: "Emplear, manipular o alterar los útiles, materiales, maquinarias, sistemas o herramientas suministrados por el empleador, para objeto distinto de aquel a que están normalmente destinados o en beneficio propio o de personas ajenas a la Empresa.", severity: "Grave" },
+      { article: "B.1.4", infraction: "Comportamiento descortés o conducta inadecuada con el uso de lenguaje irrespetuoso, profano, ofensivo y/o vulgar al responder llamadas, correos electrónicos, chats o hacia los Compañer@s, clientes, suscriptores, y otras personas que realizan negocios o presten servicios a la Empresa.", severity: "Grave" },
+      { article: "B.1.5", infraction: "Divulgación de rumores o chismes que afectan la dignidad de las Personas trabajadoras, su familia inmediata o la Empresa.", severity: "Grave" },
+      { article: "B.1.6", infraction: "Simular enfermedad, vagancia, y pérdida de tiempo durante horas de oficina, o cambiar de estación/horario/o períodos de descanso sin permiso del supervisor", severity: "Grave" },
+      { article: "B.1.7", infraction: "Dormir durante horas laborales, o en áreas no autorizadas.", severity: "Grave" },
+      { article: "B.1.8", infraction: "Faltar a las reuniones programadas por 'El Empleador' relativas al desempeño de sus labores u otros temas relacionados con el giro del negocio.", severity: "Grave" },
+      { article: "B.1.9", infraction: "Mala práctica, o Comisión de un hecho injustificado en el ejercicio de sus funciones en el cual el cliente tiene 0 tolerancia (por ejemplo, pero sin limitarse a: Faltas en el manejo de llamadas, incluyendo, pero no limitado a cortar llamadas, alterar sistema de orden de atención de llamadas entrantes (aux jumping), transferencias de llamadas no autorizadas, etc.)", severity: "Grave" },
+      { article: "B.1.10", infraction: "Hacer propaganda, proselitismo político o promover reuniones no autorizadas dentro del centro de trabajo.", severity: "Grave" },
+      { article: "B.1.11", infraction: "Omisión de reportar a Recursos Humanos cualquier tipo de relaciones románticas entre jefes y subordinados, personas trabajadoras dentro de la misma área de trabajo, personal administrativo que maneja información sensible y personas trabajadoras de cualquier otra área; así como entre personas trabajadoras que tengan diferente nivel jerárquico.", severity: "Grave" },
+      { article: "B.1.12", infraction: "No desempeñar el servicio y/o las labores asignadas siguiendo las instrucciones del empleador y/o jefe directo en lo relativo al desempeño de las labores o cuando el Operador presenta un bajo desempeño en la calidad o métricas de atención en la llamada de forma reincidente.", severity: "Grave" },
+      { article: "B.1.13", infraction: "Fumar, incluidos los cigarrillos electrónicos, en zonas prohibidas.", severity: "Grave" },
+      { article: "B.1.14", infraction: "Falla o incumplimiento de llevar a cabo exámenes periódicos o anuales, físicos y de salud, incluyendo rayos X", severity: "Grave" },
+      { article: "B.1.15", infraction: "Falla o incumplimiento de participar en programas de la Empresa, y simulacros, destinados a garantizar la salud o la seguridad de todas las Personas Trabajadoras.", severity: "Grave" },
+      { article: "B.1.16", infraction: "Negativa o incumplimiento de orientaciones justificadas de reasignación, transferencia de un lugar de trabajo a otro, o cambios en el horario de trabajo.", severity: "Grave" },
+      { article: "B.1.17", infraction: "Negativa a someterse a una inspección razonable de la persona o propiedad personal donde la Compañía lleva a cabo negocios, a menos que lo prohíba la ley. Incluyendo áreas de trabajo, casilleros, estaciones", severity: "Grave" },
+      { article: "B.1.18", infraction: "Negativa a cumplir con las instrucciones, o comisión de cualquier acción que pone en riesgo la salud, y seguridad de la Persona trabajadora y sus Compañer@s de trabajo.", severity: "Grave" },
+      { article: "B.1.19", infraction: "Insubordinación, negativa a obedecer una orden legítima, o realizar un trabajo asignado sin justificación.", severity: "Grave" },
+      { article: "B.1.20", infraction: "Incumplimiento de disposiciones del Contrato de Trabajo y Reglamento Interno de Trabajo.", severity: "Grave" },
+      { article: "B.1.21", infraction: "Ingreso no autorizado de papel a los pisos de producción, o cualquier otro artículo de carácter personal (por ejemplo, bolsos, kits de aseo) en áreas restringidas que incumpla los lineamientos y estándares de la industria, incluyendo pero no limitado a estándares de manejo de sistemas y contacto con el cliente, conocido como de Customer Operations Performance Centre (COPC), o de estándares de seguridad de datos conocido como Payment Card Industry (PCI), entre otros.", severity: "Grave" },
+      { article: "B.1.22", infraction: "Dejar desatendido y desbloqueado el equipo de trabajo, incluyendo, pero no limitativo a pantalla desbloqueada, laptop o equipo sin candado, gavetero desenllavado, etc.", severity: "Grave" },
+      { article: "B.1.23", infraction: "Iniciar o descargar consciente o intencionalmente aplicaciones/sistemas operativos no autorizadas en propiedad de la Compañía (incluyendo, pero no limitado a equipos de escritorio, portátiles, y servidores).", severity: "Grave" },
+      { article: "B.1.24", infraction: "Ingresar celulares, computadoras portátiles personales, equipos para captar fotografías, video, audio u otros, como disquetes, discos compactos, cintas de datos, cámaras, iPods, reproductores MP3, unidades de almacenamiento tipo USB, o cualquier otro tipo de medio de almacenamiento electrónico, etc., dentro de las instalaciones de la Empresa o áreas productivas, sin la debida autorización.", severity: "Grave" },
+      { article: "B.1.25", infraction: "Manipulación de equipos informáticos propiedad del Cliente.", severity: "Grave" },
+      { article: "B.1.26", infraction: "Tomar ventaja de alguien mediante manipulación, ocultamiento, uso abusivo de información privilegiada, tergiversación de hechos, y cualquier tipo de práctica injusta.", severity: "Grave" },
+      { article: "B.1.27", infraction: "No revelar o procurar la aprobación de acciones u operaciones que entrañen una situación de conflicto de intereses, de acuerdo con la política de la Empresa, u otras violaciones de normas de conflicto de interés y políticas de la Empresa similares en su naturaleza.", severity: "Grave" },
+      { article: "B.1.28", infraction: "Negligencia intencional y premeditada para revelar información material (ej. Cualquier información que pudiera afectar potencialmente el precio de acciones, y cualquier otro tipo información) incluyendo resultado de ganancias, transacciones con partes vinculadas, y fuera del Balance.", severity: "Grave" },
+      { article: "B.1.29", infraction: "Negligencia intencional y premeditada, o falta de apreciación de la eficacia de los controles y procedimientos de divulgación, y controles internos, para tomar decisiones o acciones correctivas con respecto a debilidades o deficiencias detectadas.", severity: "Grave" },
+      { article: "B.1.30", infraction: "Negligencia intencional y premeditada, o falla para valorar, administrar, restringir o minimizar riesgos relacionados en el desarrollo de los negocios de la Empresa, para evitar afectaciones al valor de las acciones.", severity: "Grave" },
+      { article: "B.1.31", infraction: "Retraso o falta, por parte de los individuos responsables, de informar cualquier daño o defecto de los bienes de la Empresa, tales como máquinas en funcionamiento y otras instalaciones/equipos, habiendo tenido conocimiento previo.", severity: "Grave" },
+      { article: "B.1.32", infraction: "Retraso o falta, por parte de los individuos responsables, de informar cualquier daño o defecto de los bienes de la Empresa, tales como máquinas en funcionamiento y otras instalaciones/equipos, habiendo tenido conocimiento previo.", severity: "Grave" },
+      { article: "B.1.33", infraction: "Retraso o falta, por parte de los individuos responsables, de informar o corregir información incorrecta e inexacta, habiendo tenido conocimiento previo.", severity: "Grave" },
+      { article: "B.1.34", infraction: "Negligencia de la responsabilidad en el ejercicio oportuno y preciso de las funciones de supervisión y liderazgo, que afecten a Compañer@s de trabajo, miembros de su equipo, la Empresa y sus socios comerciales, tales como, pero no limitado a: Tareas relacionadas con la nómina y el cronometraje de procesos; Implementación de Gestión del Rendimiento; Presentación de los documentos de baja de las Personas Trabajadoras (ej. carta de renuncia, pre‑aviso, control de horas, y formulario de aceptación de renuncia); Monitorear el cumplimiento de los acuerdos de nivel de servicio; Informar violaciones al régimen disciplinario", severity: "Grave" },
+      { article: "B.1.35", infraction: "Incumplimiento o falta deliberada, por parte de un Supervisor o Gerente, de actuar acorde con su responsabilidad de manera oportuna y precisa, tales como, pero no limitado a: Informar una infracción al régimen disciplinario, por una Persona Trabajadora bajo su dirección, para efectos de protegerlo; Presentar reportes de horas [extras], PAR/Scorecards, documentos de baja laboral (carta de renuncia, reporte de horas, aceptación de renuncia), a cambio de una ganancia indebida.", severity: "Grave" },
+      { article: "B.1.36", infraction: "Realizar, participar en actos, o estar involucrado en casos que afecten la buena imagen de la Empresa, de sus Clientes, y Personas trabajadoras. Y cualquier otro acto que desacredite a la empresa y partes vinculadas que promueva la hostilidad o incite la desmoralización de las personas trabajadoras.", severity: "Grave" },
+      { article: "B.1.37", infraction: "Registrar su salida antes de la hora oficial de salida, de forma no autorizada.", severity: "Grave" },
+      { article: "C.1.1", infraction: "Provocar, instigar o participar en una pelea o disturbios dentro de la empresa, en sus alrededores, o instalaciones relacionadas con el trabajo", severity: "Muy grave" },
+      { article: "C.1.2", infraction: "Realizar acercamientos no deseados, hacia otras personas, hostigamiento, que sean percibidos como acoso, asedio o intimidación.", severity: "Muy grave" },
+      { article: "C.1.3", infraction: "Intentar amenazar o causar lesiones a un superior, Compañer@ de trabajo, cliente, o cualquier otra persona que mantiene relaciones comerciales con la Empresa por cualquier causa relacionada con el trabajo dentro o fuera de las instalaciones de la empresa.", severity: "Muy grave" },
+      { article: "C.1.4", infraction: "Realizar insinuaciones no deseadas, hostigamiento, asedio, intimidacion o solicitar algún favor sexual u otra conducta verbal, escrita, visual, o física de naturaleza sexual que contribuya a un ambiente de trabajo intimidante, hostil u ofensivo.", severity: "Muy grave" },
+      { article: "C.1.5", infraction: "Clara actitud discriminatoria hacia personas, incluyendo, pero no limitado a razones basadas en etnia, raza, alienación política, religiosa, preferencia o identidad de género, capacidades diferentes, entre otros.", severity: "Muy grave" },
+      { article: "C.1.6", infraction: "Violaciones a la política de Seguridad de Información, incluyendo, pero no limitado a la divulgación no autorizada, copia o difusión de información propia que puede causar daño, directa o indirectamente, a un individuo, grupo, Departamento, la Empresa, y/o otras partes interesadas", severity: "Muy grave" },
+      { article: "C.1.7", infraction: "Sabotaje o cualquier acto deliberado que detenga, retrase, o interrumpa las operaciones de la Empresa.", severity: "Muy grave" },
+      { article: "C.1.8", infraction: "Mala práctica o comisión de un hecho injustificado en el ejercicio de sus funciones, que es escalada por el cliente o por el Executive Security Team, en la que sin embargo no se identifica intención de fraude por parte de la persona trabajadora", severity: "Muy grave" },
+      { article: "C.1.9", infraction: "Consumir, beber, Presentarse a trabajar, o tratar de ingresar a la Empresa bajo la influencia del alcohol o drogas /sustancias prohibidas. Incluye posesión, distribución, manufactura, consumo, venta, compra, y otras acciones relacionadas con sustancias alcohólicas e ilícitas", severity: "Muy grave" },
+      { article: "C.1.10", infraction: "Usar el carnet o cualquier otro artículo que le identifique como persona trabajadora de la empresa en bares, licorerías o lugares públicos no apropiados. O usar los mismos para participar en actividades políticas.", severity: "Muy grave" },
+      { article: "C.1.11", infraction: "Poseer, transferir, vender o utilizar armas, instrumentos peligrosos o parafernalia relacionada donde la Compañía lleva a cabo sus negocios. Esta restricción se aplica independientemente de si un empleado está autorizado (si corresponde) para portar un arma y se extiende a todas las áreas, incluidos, entre otros, los estacionamientos, vehículos personales y eventos patrocinados por la Compañía.", severity: "Muy grave" },
+      { article: "C.1.12", infraction: "Posesión, venta o estar bajo los efectos de drogas /sustancias prohibidas, independientemente de la forma y cantidad.", severity: "Muy grave" },
+      { article: "C.1.13", infraction: "Obstrucción de una investigación, otorgar declaraciones o información falsa, ocultar materiales, hechos o pruebas en una investigación llevada a cabo por cualquiera de los Comités oficiales de la Empresa instancia gubernamental regulatoria, o judicial, con jurisdicción.", severity: "Muy grave" },
+      { article: "C.1.14", infraction: "Maliciosa y premeditadamente acusar a otros de falsos errores o faltas sin fundamento.", severity: "Muy grave" },
+      { article: "C.1.15", infraction: "Cambiar la configuración de equipos de propiedad de la Empresa siempre y cuando este debidamente comprobando (Autoexec.bat, config.sys, configuración de Windows, aspectos de seguridad, la configuración de proyectos.)", severity: "Muy grave" },
+      { article: "C.1.16", infraction: "Visualización o almacenamiento de material pornográfico utilizado o asociado con el uso de recursos de la Empresa.", severity: "Muy grave" },
+      { article: "C.1.17", infraction: "Cargar, transmitir o hacer clic en enlaces en sistemas informáticos/correos electrónicos que contengan virus, caballos de Troya, gusanos u otros programas dañinos a sabiendas.", severity: "Muy grave" },
+      { article: "C.1.18", infraction: "Uso inapropiado o malicioso de información confidencial o propietaria de la Compañía, el cliente o el usuario (incluidas contraseñas o códigos de acceso) cuando se les ha confiado la custodia de esta.", severity: "Muy grave" },
+      { article: "C.1.19", infraction: "Negociar con información privilegiada de la Empresa, sus subsidiarias y afiliadas que utilizan información económicamente sensible, que normalmente no está disponible al público, y es obtenida por razón de su posición, contacto dentro de la Empresa, o de otro tipo.", severity: "Muy grave" },
+      { article: "C.1.20", infraction: "Solicitar o recibir dinero, regalías, repartir beneficios, contribuciones, o cualquier beneficio personal entendiéndose estos como sobornos, para cualquier propósito que sea – no exentos por las Políticas aplicables de la Empresa – de terceras partes con quienes la Empresa desarrolla negocios, o se propone hacerlos.", severity: "Muy grave" },
+      { article: "C.1.21", infraction: "Tergiversar intencionalmente u causar tergiversación por parte de otros, de datos de la Empresa de cara a terceros, ya sea dentro o fuera de la Empresa, incluyendo Estados de Resultado, transacciones con partes vinculadas, y fuera del Balance.", severity: "Muy grave" },
+      { article: "C.1.22", infraction: "Incumplimiento fraudulento y/o deliberado de los controles y procedimientos de divulgación de la Empresa, y controles internos aplicables al área específica de la Persona trabajadora en cuestión.", severity: "Muy grave" },
+      { article: "C.1.23", infraction: "Soborno o actividades corruptas con Agentes de Gobierno, o Reguladores en relación con cualquier transacción o negocio de la Empresa.", severity: "Muy grave" },
+      { article: "C.1.25", infraction: "Abuso de autoridad relacionada con la función de supervisión o liderazgo.", severity: "Muy grave" },
+      { article: "C.1.26", infraction: "Conducta inapropiada de un miembro del equipo Gerencial en relación con el cumplimiento de sus deberes o cualquier acto que pueda conducir a la pérdida de confianza.", severity: "Muy grave" },
+      { article: "C.1.33", infraction: "Cualquier acto que desacredite a la Empresa y partes vinculadas, que promueva la hostilidad o incite desmoralización entre las Personas Trabajadoras.", severity: "Muy grave" },
+      { article: "C.1.34", infraction: "Ausencia por tres (3) días hábiles consecutivos sin previo aviso o autorización.", severity: "Muy grave" },
+      { article: "C.1.36", infraction: "Discusión en línea, publicación o transmisión de imágenes sexualmente explícitas y otras imágenes ofensivas, intolerantes, de odio o racialmente ofensivas utilizando las computadoras propiedad de la empresa, sistemas de correo electrónico, programas de computadora y otros dispositivos propiedad de la Compañía.", severity: "Muy grave" }
+    ];
 
-    <div class="two">
-      <div class="k">
-        <div class="pill">Framework ROCFT</div>
-        <p><strong>R</strong>ol • <strong>O</strong>bjetivo • <strong>C</strong>ontexto • <strong>F</strong>ormato • <strong>T</strong>ono.</p>
-        <div class="notice">Tip: Añade <span class="kbd">"Evita contenido sensible"</span> y <span class="kbd">"Si falta info, pregunta"</span>.</div>
-        <pre class="code"><button class="copy">Copiar</button><code>Actúa como [rol]. Objetivo: [objetivo]. Contexto: [contexto]. Formato: [formato]. Tono: [tono]. Restricciones: [límites]. Si falta info, pregunta.</code></pre>
-      </div>
-      <div class="k">
-        <div class="pill">Plantillas útiles</div>
-        <ul>
-          <li>Corrección/reescritura con criterios explícitos</li>
-          <li>Evaluador con rúbrica</li>
-          <li>Generador de datos sintéticos</li>
-          <li>Agente de QA para workflows</li>
-        </ul>
-      </div>
-    </div>
-  </section>
+    const categoriasPorArticulo = {
+      "A.1.17": "Asistencia y puntualidad",
+      "A.1.18": "Asistencia y puntualidad",
+      "A.1.19": "Asistencia y puntualidad",
+      "A.1.20": "Asistencia y puntualidad",
+      "C.1.34": "Asistencia y puntualidad",
+      "B.1.8": "Asistencia y puntualidad",
+      "B.1.16": "Desobediencia / Insubordinación",
+      "B.1.18": "Desobediencia / Insubordinación",
+      "B.1.19": "Desobediencia / Insubordinación",
+      "B.1.17": "Desobediencia / Insubordinación",
+      "B.1.12": "Desobediencia / Insubordinación",
+      "B.1.4": "Conducta y comportamiento",
+      "B.1.5": "Conducta y comportamiento",
+      "B.1.36": "Conducta y comportamiento",
+      "C.1.33": "Conducta y comportamiento",
+      "C.1.2": "Conducta y comportamiento",
+      "C.1.4": "Conducta y comportamiento",
+      "C.1.5": "Conducta y comportamiento",
+      "C.1.1": "Conducta y comportamiento",
+      "C.1.3": "Conducta y comportamiento",
+      "B.1.7": "Conducta y comportamiento",
+      "A.1.8": "Seguridad y control de accesos",
+      "A.1.11": "Seguridad y control de accesos",
+      "A.1.12": "Seguridad y control de accesos",
+      "A.1.13": "Seguridad y control de accesos",
+      "B.1.2": "Seguridad y control de accesos",
+      "B.1.21": "Seguridad y control de acessos",
+      "A.1.7": "Uso indebido de recursos / TI",
+      "A.1.9": "Uso indebido de recursos / TI",
+      "A.1.10": "Uso indebido de recursos / TI",
+      "C.1.15": "Uso indebido de recursos / TI",
+      "C.1.30": "Uso indebido de recursos / TI",
+      "B.1.22": "Uso indebido de recursos / TI",
+      "B.1.23": "Uso indebido de recursos / TI",
+      "B.1.25": "Uso indebido de recursos / TI",
+      "A.1.14": "Uso indebido de recursos / TI",
+      "A.1.15": "Uso indebido de recursos / TI",
+      "C.1.17": "Uso indebido de recursos / TI",
+      "C.1.6": "Uso indebido de recursos / TI",
+      "C.1.7": "Uso indebido de recursos / TI",
+      "C.1.16": "Uso indebido de recursos / TI",
+      "C.1.36": "Uso indebido de recursos / TI",
+      "B.1.26": "Ética e integridad",
+      "B.1.27": "Ética e integridad",
+      "C.1.18": "Ética e integridad",
+      "C.1.19": "Ética e integridad",
+      "C.1.20": "Ética e integridad",
+      "C.1.23": "Ética e integridad",
+      "C.1.29": "Ética e integridad",
+      "C.1.31": "Ética e integridad",
+      "C.1.32": "Ética e integridad",
+      "C.1.13": "Ética e integridad",
+      "C.1.14": "Ética e integridad",
+      "C.1.21": "Ética e integridad",
+      "C.1.22": "Ética e integridad",
+      "C.1.28": "Ética e integridad",
+      "B.1.36": "Imagen corporativa",
+      "C.1.10": "Imagen corporativa",
+      "C.1.9": "Salud y consumo",
+      "C.1.12": "Salud y consumo",
+      "B.1.13": "Salud y consumo",
+      "B.1.14": "Salud y consumo",
+      "B.1.15": "Salud y consumo",
+      "B.1.34": "Supervisión y liderazgo",
+      "B.1.35": "Supervisión y liderazgo",
+      "C.1.25": "Supervisión y liderazgo",
+      "C.1.26": "Supervisión y liderazgo",
+      "A.1.1": "Otros",
+      "A.1.3": "Otros",
+      "A.1.5": "Otros",
+      "A.1.6": "Otros",
+      "A.1.10": "Otros",
+      "B.1.10": "Otros",
+      "B.1.11": "Otros",
+      "B.1.31": "Otros",
+      "B.1.32": "Otros",
+      "B.1.33": "Otros"
+    };
 
-  <!-- QUALITY -->
-  <section id="quality">
-    <h2>📏 Calidad</h2>
-    <div class="grid">
-      <div class="k do"><strong>Haz:</strong> define inputs, salidas y criterios de éxito medibles.</div>
-      <div class="k dont"><strong>Evita:</strong> pedir “magia”; sé concreto con formato, tono y límites.</div>
-      <div class="k"><div class="pill">Checklist</div>
-        <ul>
-          <li>Fuentes/citas cuando aplica</li>
-          <li>Verificación rápida (self-check)</li>
-          <li>Incertidumbres explícitas</li>
-        </ul>
-      </div>
-    </div>
-  </section>
+    function classifyType(severity) {
+      return severity;
+    }
 
-  <!-- TIPS -->
-  <section id="tips">
-    <h2>🛡️ Ética & Seguridad</h2>
-    <details class="ac"><summary>Privacidad</summary><p>Evita datos sensibles; usa datos ficticios cuando puedas.</p></details>
-    <details class="ac"><summary>Limitaciones</summary><p>Señala incertidumbres y evita afirmaciones categóricas sin respaldo.</p></details>
-  </section>
+    function prepareData(matrix) {
+      return matrix.map(row => {
+        const categoria = categoriasPorArticulo[row.article] || 'Otros';
+        const type = classifyType(row.severity);
+        return { ...row, categoria, type };
+      });
+    }
 
-  <!-- PLAYGROUND (demo simple) -->
-  <section id="playground">
-    <h2>🎛️ Playground de prompts</h2>
-    <div class="k composer">
-      <label for="role">Rol</label>
-      <input id="role" placeholder="Ej. Analista, Profesor, Revisor…"/>
-      <div class="row">
-        <div>
-          <label for="goal">Objetivo</label>
-          <input id="goal" placeholder="Qué quieres lograr"/>
-        </div>
-        <div>
-          <label for="tone">Tono</label>
-          <input id="tone" placeholder="Profesional, casual, empático…"/>
-        </div>
-      </div>
-      <label for="context">Contexto</label>
-      <textarea id="context" rows="4" placeholder="Pega datos/condiciones"></textarea>
-      <label for="format">Formato de salida</label>
-      <input id="format" placeholder="Tabla Markdown, JSON, viñetas…"/>
-      <button class="btn" id="btn-build">Construir prompt</button>
-      <pre class="code" id="out"><button class="copy">Copiar</button><code></code></pre>
-    </div>
-  </section>
+    let prepared = prepareData(disciplinaryMatrix);
+    let currentSearch = '';
+    let currentSeverity = 'Todas';
+    let currentCategory = 'Todas';
 
-  <!-- FAQ -->
-  <section id="faq">
-    <h2>❓ FAQ</h2>
-    <details class="ac"><summary>¿Puedo incrustar este archivo en Google Sites?</summary><p>Sí: publícalo (GitHub Pages/Netlify) y usa “Insertar → URL”. Carga dentro de un iframe y conserva estilos/JS.</p></details>
-  </section>
+    const searchInput = document.getElementById('searchInput');
+    const severitySelect = document.getElementById('severitySelect');
+    const categorySelect = document.getElementById('categorySelect');
+    const clearBtn = document.getElementById('clearBtn');
+    const tableBody = document.getElementById('tableBody');
 
-  <!-- Contacto (no-footer fijo) -->
-  <footer class="footer">
-    <div class="wrap-inner">
-      <div>
-        <h3>Contacto</h3>
-        <p class="sub">¿Preguntas o sugerencias sobre este playbook? Escríbeme.</p>
-        <ul>
-          <li>Correo: <a href="mailto:example@company.com">ronald.guido@concentrix.com</a></li>
-          <li>Teams: <a href="#" onclick="return false;">Disponible por Microsoft Teams</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Acerca del documento</h3>
-        <p>Guía práctica sobre modelos de razonamiento: mejores prácticas, plantillas y flujos.</p>
-        <div class="toolbar">
-          <span class="chip">Actualizado: 2025-08-13</span>
-          <span class="chip">Versión: 1.2</span>
-        </div>
-      </div>
-    </div>
-  </footer>
-</div>
+    function populateCategoryOptions() {
+      const categoriasUnicas = Array.from(new Set(prepared.map(r => r.categoria)));
+      categoriasUnicas.sort();
+      categoriasUnicas.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat;
+        opt.textContent = cat;
+        categorySelect.appendChild(opt);
+      });
+    }
 
-<script>
-// Tiny helper: copy buttons
-addEventListener('click', (e)=>{
-  const b = e.target.closest('.copy'); if(!b) return;
-  const pre = b.parentElement; const code = pre.querySelector('code');
-  const text = code ? code.textContent : '';
-  navigator.clipboard?.writeText(text).then(()=>{ b.textContent='Copiado ✓'; setTimeout(()=>b.textContent='Copiar',1200); })
-  .catch(()=>{ alert('Copia manual: selecciona y Ctrl/Cmd+C'); });
-}, {passive:true});
+    function filterAndRender() {
+      const filtered = prepared
+        .filter(r => {
+          const matchSearch = currentSearch === '' ||
+            r.infraction.toLowerCase().includes(currentSearch) ||
+            r.article.toLowerCase().includes(currentSearch);
+          const matchSeverity = currentSeverity === 'Todas' || r.type === currentSeverity;
+          const matchCategory = currentCategory === 'Todas' || r.categoria === currentCategory;
+          return matchSearch && matchSeverity && matchCategory;
+        });
 
-// Playground builder
-const $ = (s)=>document.querySelector(s);
-const out = $('#out code');
-$('#btn-build')?.addEventListener('click', ()=>{
-  const role=$('#role').value.trim();
-  const goal=$('#goal').value.trim();
-  const ctx=$('#context').value.trim();
-  const fmt=$('#format').value.trim();
-  const tone=$('#tone').value.trim();
-  out.textContent = `Actúa como ${role||'[rol]'}. Objetivo: ${goal||'[objetivo]'}. Contexto: ${ctx||'[contexto]'}. Formato: ${fmt||'[formato]'}. Tono: ${tone||'[tono]'}. Si falta info, pregúntame.`;
-});
+      tableBody.innerHTML = '';
+      if (filtered.length === 0) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 4;
+        td.textContent = 'No se encontraron resultados';
+        td.style.textAlign = 'center';
+        tr.appendChild(td);
+        tableBody.appendChild(tr);
+        return;
+      }
 
-// Header behavior: hide on scroll down, show compact tabbar on scroll up; full only near top
-(function(){
-  const h = document.querySelector('header.hero');
-  let lastY = 0, ticking = false; const clampTop = 60;
-  const setMode = (mode)=>{
-    h.classList.remove('tabbar','hide','shrink');
-    if(mode==='tabbar') h.classList.add('tabbar','shrink');
-    if(mode==='hide') h.classList.add('hide');
-  };
-  const onScroll = ()=>{
-    const y = scrollY||0; const dir = (y>lastY)?'down':'up';
-    if (y <= clampTop){ setMode('full'); }
-    else if (dir==='down' && y>lastY+8){ setMode('hide'); }
-    else if (dir==='up' && lastY-y>8){ setMode('tabbar'); }
-    lastY = y; ticking=false;
-  };
-  addEventListener('scroll', ()=>{ if(!ticking){ ticking=true; requestAnimationFrame(onScroll); } }, {passive:true});
-})();
-</script>
+      filtered.forEach(r => {
+        const tr = document.createElement('tr');
+
+        const tdArticle = document.createElement('td');
+        tdArticle.textContent = r.article;
+        tr.appendChild(tdArticle);
+
+        const tdInfraction = document.createElement('td');
+        tdInfraction.textContent = r.infraction;
+        tr.appendChild(tdInfraction);
+
+        const tdSeverity = document.createElement('td');
+        tdSeverity.textContent = r.type;
+        tdSeverity.classList.add('severity-' + r.type.replace(/\s+/g, ''));
+        tr.appendChild(tdSeverity);
+
+        const tdCategory = document.createElement('td');
+        const spanBadge = document.createElement('span');
+        spanBadge.textContent = r.categoria;
+        spanBadge.classList.add('badge');
+        tdCategory.appendChild(spanBadge);
+        tr.appendChild(tdCategory);
+
+        tableBody.appendChild(tr);
+      });
+    }
+
+    searchInput.addEventListener('input', e => {
+      currentSearch = e.target.value.trim().toLowerCase();
+      filterAndRender();
+    });
+    severitySelect.addEventListener('change', e => {
+      currentSeverity = e.target.value;
+      filterAndRender();
+    });
+    categorySelect.addEventListener('change', e => {
+      currentCategory = e.target.value;
+      filterAndRender();
+    });
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      severitySelect.value = 'Todas';
+      categorySelect.value = 'Todas';
+      currentSearch = '';
+      currentSeverity = 'Todas';
+      currentCategory = 'Todas';
+      filterAndRender();
+    });
+
+    populateCategoryOptions();
+    filterAndRender();
+  </script>
+
 </body>
 </html>
