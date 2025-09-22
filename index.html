@@ -1,312 +1,338 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Matriz Disciplinaria</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Matriz Disciplinaria — Concentrix</title>
+
+  <!-- Google Fonts: Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
+
   <style>
-    :root {
-      --cn-teal: #38b2ac;
-      --cn-gray-light: #e2e8f0;
-      --cn-gray-medium: #a0aec0;
-      --cn-gray-dark: #4a5568;
-      --cn-white: #ffffff;
-      --cn-black: #2d3748;
+    :root{
+      /* Paleta inspirada en tu slide */
+      --cnx-aqua:   #2DE0D1;
+      --cnx-teal:   #19C2B5;
+      --cnx-navy:   #22356F;
+      --cnx-yellow: #F5D654;
+      --cnx-pink:   #DB3D86;
+      --cnx-gray:   #F4F4F6;
+      --cnx-text:   #232323;
+      --white:      #FFFFFF;
     }
-    body {
-      font-family: Arial, sans-serif;
-      margin: 2rem;
-      color: var(--cn-black);
-      background-color: var(--cn-gray-light);
+
+    *{ box-sizing: border-box; }
+    body{
+      font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+      background: var(--cnx-gray);
+      color: var(--cnx-text);
+      line-height: 1.4;
     }
-    h1 {
-      text-align: center;
+
+    header{
+      padding: 2.25rem 1rem 1.25rem;
+      background: linear-gradient(180deg, #ffffff 0%, #f9ffff 100%);
+      border-bottom: 4px solid var(--cnx-aqua);
     }
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      align-items: center;
-      justify-content: space-between;
+    .container{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1rem;
     }
-    .controls input[type="text"] {
-      flex: 1;
-      min-width: 200px;
-      padding: 0.5rem 1rem;
-      border: 1px solid var(--cn-gray-medium);
-      border-radius: 0.5rem;
-      font-size: 1rem;
+    h1{
+      margin: 0 0 .35rem;
+      color: var(--cnx-navy);
+      font-weight: 700;
+      letter-spacing: .2px;
     }
-    .controls select,
-    .controls button {
-      padding: 0.5rem 0.75rem;
-      border-radius: 0.5rem;
-      border: 1px solid var(--cn-gray-medium);
-      background-color: var(--cn-white);
+    .subtitle{
+      margin: 0;
+      color: #4b5563;
       font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
     }
-    .controls select:focus,
-    .controls input[type="text"]:focus {
+
+    .card{
+      background: var(--white);
+      border-radius: 14px;
+      box-shadow: 0 12px 24px rgba(0,0,0,.06);
+      padding: 1.25rem;
+      margin: 1.5rem auto 2rem;
+    }
+
+    /* Controles */
+    .controls{
+      display: grid;
+      grid-template-columns: 1fr repeat(3, minmax(180px, 200px)) auto;
+      gap: .75rem;
+      align-items: center;
+    }
+    .control{
+      padding: .8rem .95rem;
+      border: 2px solid var(--cnx-aqua);
+      border-radius: 10px;
+      background: var(--white);
+      font-size: 0.98rem;
       outline: none;
-      border-color: var(--cn-teal);
-      box-shadow: 0 0 0 2px rgba(56, 178, 172, 0.3);
+      transition: box-shadow .2s ease, border-color .2s ease;
     }
-    .controls button:hover {
-      background-color: var(--cn-teal);
-      color: var(--cn-white);
-      border-color: var(--cn-teal);
+    .control:focus{
+      border-color: var(--cnx-teal);
+      box-shadow: 0 0 0 3px rgba(25,194,181,.18);
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: var(--cn-white);
-      border: 1px solid var(--cn-gray-medium);
+    .btn{
+      padding: .85rem 1rem;
+      border: none;
+      border-radius: 10px;
+      background: var(--cnx-aqua);
+      color: var(--white);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s ease, transform .05s ease;
+      white-space: nowrap;
     }
-    th, td {
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid var(--cn-gray-light);
-      text-align: left;
+    .btn:hover{ background: var(--cnx-teal); }
+    .btn:active{ transform: translateY(1px); }
+    .btn.secondary{
+      background: #ffffff;
+      color: var(--cnx-navy);
+      border: 2px solid var(--cnx-navy);
     }
-    th {
-      background-color: var(--cn-gray-medium);
-      color: var(--cn-white);
+    .actions{
+      display:flex; gap:.5rem; justify-content:flex-end;
     }
-    tr:nth-child(even) {
-      background-color: var(--cn-gray-light);
+
+    /* Tabla */
+    table{ width:100%; border-collapse: collapse; border-radius:12px; overflow:hidden; }
+    thead th{
+      background: var(--cnx-navy);
+      color: var(--white);
+      text-align:left;
+      padding: .95rem 1rem;
+      font-weight: 700;
     }
-    tr:hover {
-      background-color: #edf2f7;
+    tbody td{
+      padding: .9rem 1rem;
+      border-bottom: 1px solid #eef2f7;
+      vertical-align: top;
     }
-    .severity-Leve {
-      color: #2f855a;
+    tbody tr:nth-child(even){ background:#fafafa; }
+    tbody tr:hover{ background:#f0fdfd; }
+
+    .severity-Leve{ color: var(--cnx-yellow); font-weight: 700; }
+    .severity-Grave{ color: var(--cnx-pink); font-weight: 700; }
+    .severity-Muygrave{ color: var(--cnx-navy); font-weight: 700; } /* <- "Muy grave" sin espacio en clase */
+
+    .badge{
+      display:inline-block;
+      padding: .25rem .6rem;
+      border-radius: 999px;
+      background: var(--cnx-aqua);
+      color: var(--white);
+      font-size: .78rem;
+      font-weight: 700;
     }
-    .severity-Grave {
-      color: #dd6b20;
+
+    footer{
+      padding: 1.25rem 1rem 2rem;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:.75rem;
     }
-    .severity-MuyGrave {
-      color: #c53030;
-    }
-    .badge {
-      display: inline-block;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
-      font-size: 0.85rem;
-      background-color: var(--cn-gray-medium);
-      color: var(--cn-white);
+    footer img{ height:42px; }
+    footer small{ color:#6b7280; font-weight:600; }
+    @media (max-width: 900px){
+      .controls{ grid-template-columns: 1fr 1fr; }
+      .actions{ grid-column: 1 / -1; }
     }
   </style>
 </head>
 <body>
+  <header>
+    <div class="container">
+      <h1>Matriz Disciplinaria</h1>
+      <p class="subtitle">Busca, filtra por severidad y categoría, y revisa artículos rápidamente.</p>
+    </div>
+  </header>
 
-  <h1>Matriz Disciplinaria</h1>
+  <main class="container">
+    <section class="card">
+      <div class="controls">
+        <input id="searchInput" class="control" type="text" placeholder="Buscar por artículo o infracción…">
+        <select id="severitySelect" class="control">
+          <option value="Todas">Todas severidades</option>
+          <option value="Leve">Leve</option>
+          <option value="Grave">Grave</option>
+          <option value="Muy grave">Muy grave</option>
+        </select>
+        <select id="categorySelect" class="control">
+          <option value="Todas">Todas categorías</option>
+        </select>
+        <select id="limitSelect" class="control">
+          <option value="10">10 filas</option>
+          <option value="25">25 filas</option>
+          <option value="50">50 filas</option>
+          <option value="9999">Todas</option>
+        </select>
+        <div class="actions">
+          <button id="clearBtn" class="btn secondary">Limpiar</button>
+          <button id="exportBtn" class="btn">Exportar CSV</button>
+        </div>
+      </div>
 
-  <div class="controls">
-    <input type="text" id="searchInput" placeholder="Buscar artículo, infracción...">
-    <select id="severitySelect">
-      <option value="Todas">Todas severidades</option>
-      <option value="Leve">Leve</option>
-      <option value="Grave">Grave</option>
-      <option value="Muy grave">Muy grave</option>
-    </select>
-    <select id="categorySelect">
-      <option value="Todas">Todas categorías</option>
-      <!-- Las opciones se llenarán dinámicamente -->
-    </select>
-    <button id="clearBtn">Limpiar filtros</button>
-  </div>
+      <div style="overflow:auto; margin-top:1rem;">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:120px;">Artículo</th>
+              <th>Infracción</th>
+              <th style="width:120px;">Severidad</th>
+              <th style="width:220px;">Categoría</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"><tr><td colspan="4">Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Artículo</th>
-        <th>Infracción</th>
-        <th>Severidad</th>
-        <th>Categoría</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody">
-      <!-- Filas se generan dinámicamente -->
-    </tbody>
-  </table>
+  <footer>
+    <img src="https://cnxmail.sharepoint.com/:u:/r/sites/TrainingTeamCNX/Shared%20Documents/ripple_full%20(1).svg?csf=1&web=1&e=JbWgBf" alt="Concentrix ripple logo">
+    <small>© Concentrix</small>
+  </footer>
 
   <script>
-    // Array completo de datos
+    /* =============== DATASET COMPLETO =============== */
     const disciplinaryMatrix = [
-      { article: "A.1.1", infraction: "La participación o promoción, dentro de las instalaciones de la Empresa de cualquier forma de juego, loterías, juegos de azar, rafas, ventas, solicitar o recolectar contribuciones para cualquier fin, en cualquier momento, dentro de las instalaciones de la Empresa o por canal corporativo.", severity: "Leve" },
-      { article: "A.1.2", infraction: "Ingresar a la Empresa en horas o días no laborales, por subsidio, incapacidad, suspensión, vacaciones u otra licencia.", severity: "Leve" },
-      { article: "A.1.3", infraction: "Promover, proponer, o practicar el préstamo de dinero con fines de lucro o beneficio personal dentro de las instalaciones de la Empresa, o tomando ventaja del cargo/posición que ocupa.", severity: "Leve" },
-      { article: "A.1.4", infraction: "Injustificada omisión del uso de la identificación dentro de las instalaciones de la Empresa.", severity: "Leve" },
-      { article: "A.1.5", infraction: "Cometer actos contra la sanidad, limpieza y las normas de tráfico, y estacionamiento dentro de instalaciones de la Empresa.", severity: "Leve" },
-      { article: "A.1.6", infraction: "Violación del Código de Uso de Vestimenta establecido.", severity: "Leve" },
-      { article: "A.1.7", infraction: "Uso de computadoras de la Empresa (incluyendo, pero no limitado a equipos de escritorio, portátiles, y servidores) para actividades no relacionadas con el trabajo, como jugar, navegar, chatear, etc.", severity: "Leve" },
-      { article: "A.1.8", infraction: "Uso inadecuado de identificación personal, incluyendo, pero no limitado a: no portar tarjeta de identificación (Badge), permitir la entrada de alguien que no ande su tarjeta, no marcar con su tarjeta en el control de acceso (Tailgating), Etc.", severity: "Leve" },
-      { article: "A.1.9", infraction: "Cambiar la configuración física de las estaciones de trabajo (incluyendo, pero no limitado CPUs, monitores, amplificadores, teléfonos IP, auriculares, UPS, etiquetas del ordenador).", severity: "Leve" },
+      { article: "A.1.1",  infraction: "La participación o promoción, dentro de las instalaciones de la Empresa de cualquier forma de juego, loterías, juegos de azar, rafas, ventas, solicitar o recolectar contribuciones para cualquier fin, en cualquier momento, dentro de las instalaciones de la Empresa o por canal corporativo.", severity: "Leve" },
+      { article: "A.1.2",  infraction: "Ingresar a la Empresa en horas o días no laborales, por subsidio, incapacidad, suspensión, vacaciones u otra licencia.", severity: "Leve" },
+      { article: "A.1.3",  infraction: "Promover, proponer, o practicar el préstamo de dinero con fines de lucro o beneficio personal dentro de las instalaciones de la Empresa, o tomando ventaja del cargo/posición que ocupa.", severity: "Leve" },
+      { article: "A.1.4",  infraction: "Injustificada omisión del uso de la identificación dentro de las instalaciones de la Empresa.", severity: "Leve" },
+      { article: "A.1.5",  infraction: "Cometer actos contra la sanidad, limpieza y las normas de tráfico, y estacionamiento dentro de instalaciones de la Empresa.", severity: "Leve" },
+      { article: "A.1.6",  infraction: "Violación del Código de Uso de Vestimenta establecido.", severity: "Leve" },
+      { article: "A.1.7",  infraction: "Uso de computadoras de la Empresa (incluyendo, pero no limitado a equipos de escritorio, portátiles, y servidores) para actividades no relacionadas con el trabajo, como jugar, navegar, chatear, etc.", severity: "Leve" },
+      { article: "A.1.8",  infraction: "Uso inadecuado de identificación personal, incluyendo, pero no limitado a: no portar tarjeta de identificación (Badge), permitir la entrada de alguien que no ande su tarjeta, no marcar con su tarjeta en el control de acceso (Tailgating), Etc.", severity: "Leve" },
+      { article: "A.1.9",  infraction: "Cambiar la configuración física de las estaciones de trabajo (incluyendo, pero no limitado CPUs, monitores, amplificadores, teléfonos IP, auriculares, UPS, etiquetas del ordenador).", severity: "Leve" },
       { article: "A.1.10", infraction: "Ingerir alimentos de cualquier tipo en áreas restringidas, incluyendo, pero no limitado a pisos de producción, oficinas administrativas, áreas de entrenamiento, etc.", severity: "Leve" },
       { article: "A.1.11", infraction: "Seguir a otra persona a través de puntos de control de seguridad sin ser revisado (también conocido como 'colarse') u obtener acceso a áreas restringidas mediante representación falsa o fraude.", severity: "Leve" },
       { article: "A.1.12", infraction: "Seguir a otra persona a través de puntos de control de seguridad sin ser revisado (también conocido como 'colarse') u obtener acceso a áreas restringidas mediante representación falsa o fraude.", severity: "Leve" },
       { article: "A.1.13", infraction: "Falta de registro y acompañamiento de invitados/visitantes en lugares donde la Compañía realiza negocios.", severity: "Leve" },
       { article: "A.1.14", infraction: "Fallo en completar con éxito la capacitación obligatoria derivada de una simulación de phishing fallida o de un ataque de ciberseguridad real.", severity: "Leve" },
-      { article: "A.1.15", infraction: "Simulación de phishing fallida o ataque real de ciberseguridad, De 2 - 4 semanas de vencido, aplica AV y De 4 - 6 semanas de vencido, aplica AE", severity: "Leve" },
-      { article: "A.1.16", infraction: "Incumplimiento o atraso en el alcance o cumplimiento de proyectos que le han sido asignados, además de las tareas regulares (ej: certificación Lean Six Sigma, requisito de cumplimiento ISO).", severity: "Leve" },
+      { article: "A.1.15", infraction: "Simulación de phishing fallida o ataque real de ciberseguridad, De 2 - 4 semanas de vencido, aplica AV y De 4 - 6 semanas de vencido, aplica AE.", severity: "Leve" },
+      { article: "A.1.16", infraction: "Incumplimiento o atraso en el alcance o cumplimiento de proyectos asignados, además de las tareas regulares (p. ej., certificación Lean Six Sigma, requisito ISO).", severity: "Leve" },
       { article: "A.1.17", infraction: "Presentarse tarde a su turno, en dos ocasiones durante un mes, incluyendo retorno de almuerzos o descanso.", severity: "Leve" },
       { article: "A.1.18", infraction: "No marcar el control de entrada/salida en el sistema correspondiente en dos ocasiones durante una misma semana.", severity: "Leve" },
-      { article: "A.1.19", infraction: "No presentarse a realizar las horas extra voluntariamente acordadas y previamente aprobadas, afectando la buena marcha y productividad de la empresa – sin razón válida.", severity: "Leve" },
+      { article: "A.1.19", infraction: "No presentarse a realizar las horas extra voluntariamente acordadas y previamente aprobadas, afectando la productividad de la empresa – sin razón válida.", severity: "Leve" },
       { article: "A.1.20", infraction: "No informar a su jefe inmediato, o en su defecto a Recursos Humanos, las razones de su ausencia o llegada tarde, en las primeras dos horas del día laboral.", severity: "Leve" },
-      { article: "B.1.1", infraction: "Publicación no autorizada, eliminación o alteración de documentos oficiales publicados en la tabla de avisos de la empresa.", severity: "Grave" },
-      { article: "B.1.2", infraction: "Ingresar o permitir que personas no autorizadas ingresen en áreas restringidas sin causas justificadas, incluyendo, pero no limitado a ingresar a un piso de producción que no es de tu cuenta, oficina de IT, etc.", severity: "Grave" },
-      { article: "B.1.3", infraction: "Emplear, manipular o alterar los útiles, materiales, maquinarias, sistemas o herramientas suministrados por el empleador, para objeto distinto de aquel a que están normalmente destinados o en beneficio propio o de personas ajenas a la Empresa.", severity: "Grave" },
-      { article: "B.1.4", infraction: "Comportamiento descortés o conducta inadecuada con el uso de lenguaje irrespetuoso, profano, ofensivo y/o vulgar al responder llamadas, correos electrónicos, chats o hacia los Compañer@s, clientes, suscriptores, y otras personas que realizan negocios o presten servicios a la Empresa.", severity: "Grave" },
-      { article: "B.1.5", infraction: "Divulgación de rumores o chismes que afectan la dignidad de las Personas trabajadoras, su familia inmediata o la Empresa.", severity: "Grave" },
-      { article: "B.1.6", infraction: "Simular enfermedad, vagancia, y pérdida de tiempo durante horas de oficina, o cambiar de estación/horario/o períodos de descanso sin permiso del supervisor", severity: "Grave" },
-      { article: "B.1.7", infraction: "Dormir durante horas laborales, o en áreas no autorizadas.", severity: "Grave" },
-      { article: "B.1.8", infraction: "Faltar a las reuniones programadas por 'El Empleador' relativas al desempeño de sus labores u otros temas relacionados con el giro del negocio.", severity: "Grave" },
-      { article: "B.1.9", infraction: "Mala práctica, o Comisión de un hecho injustificado en el ejercicio de sus funciones en el cual el cliente tiene 0 tolerancia (por ejemplo, pero sin limitarse a: Faltas en el manejo de llamadas, incluyendo, pero no limitado a cortar llamadas, alterar sistema de orden de atención de llamadas entrantes (aux jumping), transferencias de llamadas no autorizadas, etc.)", severity: "Grave" },
-      { article: "B.1.10", infraction: "Hacer propaganda, proselitismo político o promover reuniones no autorizadas dentro del centro de trabajo.", severity: "Grave" },
-      { article: "B.1.11", infraction: "Omisión de reportar a Recursos Humanos cualquier tipo de relaciones románticas entre jefes y subordinados, personas trabajadoras dentro de la misma área de trabajo, personal administrativo que maneja información sensible y personas trabajadoras de cualquier otra área; así como entre personas trabajadoras que tengan diferente nivel jerárquico.", severity: "Grave" },
-      { article: "B.1.12", infraction: "No desempeñar el servicio y/o las labores asignadas siguiendo las instrucciones del empleador y/o jefe directo en lo relativo al desempeño de las labores o cuando el Operador presenta un bajo desempeño en la calidad o métricas de atención en la llamada de forma reincidente.", severity: "Grave" },
-      { article: "B.1.13", infraction: "Fumar, incluidos los cigarrillos electrónicos, en zonas prohibidas.", severity: "Grave" },
-      { article: "B.1.14", infraction: "Falla o incumplimiento de llevar a cabo exámenes periódicos o anuales, físicos y de salud, incluyendo rayos X", severity: "Grave" },
-      { article: "B.1.15", infraction: "Falla o incumplimiento de participar en programas de la Empresa, y simulacros, destinados a garantizar la salud o la seguridad de todas las Personas Trabajadoras.", severity: "Grave" },
-      { article: "B.1.16", infraction: "Negativa o incumplimiento de orientaciones justificadas de reasignación, transferencia de un lugar de trabajo a otro, o cambios en el horario de trabajo.", severity: "Grave" },
-      { article: "B.1.17", infraction: "Negativa a someterse a una inspección razonable de la persona o propiedad personal donde la Compañía lleva a cabo negocios, a menos que lo prohíba la ley. Incluyendo áreas de trabajo, casilleros, estaciones", severity: "Grave" },
-      { article: "B.1.18", infraction: "Negativa a cumplir con las instrucciones, o comisión de cualquier acción que pone en riesgo la salud, y seguridad de la Persona trabajadora y sus Compañer@s de trabajo.", severity: "Grave" },
-      { article: "B.1.19", infraction: "Insubordinación, negativa a obedecer una orden legítima, o realizar un trabajo asignado sin justificación.", severity: "Grave" },
-      { article: "B.1.20", infraction: "Incumplimiento de disposiciones del Contrato de Trabajo y Reglamento Interno de Trabajo.", severity: "Grave" },
-      { article: "B.1.21", infraction: "Ingreso no autorizado de papel a los pisos de producción, o cualquier otro artículo de carácter personal (por ejemplo, bolsos, kits de aseo) en áreas restringidas que incumpla los lineamientos y estándares de la industria, incluyendo pero no limitado a estándares de manejo de sistemas y contacto con el cliente, conocido como de Customer Operations Performance Centre (COPC), o de estándares de seguridad de datos conocido como Payment Card Industry (PCI), entre otros.", severity: "Grave" },
-      { article: "B.1.22", infraction: "Dejar desatendido y desbloqueado el equipo de trabajo, incluyendo, pero no limitativo a pantalla desbloqueada, laptop o equipo sin candado, gavetero desenllavado, etc.", severity: "Grave" },
-      { article: "B.1.23", infraction: "Iniciar o descargar consciente o intencionalmente aplicaciones/sistemas operativos no autorizadas en propiedad de la Compañía (incluyendo, pero no limitado a equipos de escritorio, portátiles, y servidores).", severity: "Grave" },
-      { article: "B.1.24", infraction: "Ingresar celulares, computadoras portátiles personales, equipos para captar fotografías, video, audio u otros, como disquetes, discos compactos, cintas de datos, cámaras, iPods, reproductores MP3, unidades de almacenamiento tipo USB, o cualquier otro tipo de medio de almacenamiento electrónico, etc., dentro de las instalaciones de la Empresa o áreas productivas, sin la debida autorización.", severity: "Grave" },
+
+      { article: "B.1.1",  infraction: "Publicación no autorizada, eliminación o alteración de documentos oficiales publicados en la tabla de avisos de la empresa.", severity: "Grave" },
+      { article: "B.1.2",  infraction: "Ingresar o permitir que personas no autorizadas ingresen en áreas restringidas sin causas justificadas.", severity: "Grave" },
+      { article: "B.1.3",  infraction: "Emplear, manipular o alterar útiles, materiales, maquinarias, sistemas o herramientas de la Empresa para objeto distinto o beneficio propio.", severity: "Grave" },
+      { article: "B.1.4",  infraction: "Comportamiento descortés o lenguaje irrespetuoso, profano, ofensivo y/o vulgar hacia clientes o colaboradores.", severity: "Grave" },
+      { article: "B.1.5",  infraction: "Divulgación de rumores o chismes que afectan la dignidad de las personas trabajadoras o la Empresa.", severity: "Grave" },
+      { article: "B.1.6",  infraction: "Simular enfermedad, vagancia, pérdida de tiempo, o cambiar horarios/descansos sin permiso.", severity: "Grave" },
+      { article: "B.1.7",  infraction: "Dormir durante horas laborales o en áreas no autorizadas.", severity: "Grave" },
+      { article: "B.1.8",  infraction: "Faltar a reuniones programadas por el empleador.", severity: "Grave" },
+      { article: "B.1.9",  infraction: "Mala práctica en funciones con 0 tolerancia del cliente (cortar llamadas, transferencias no autorizadas, etc.).", severity: "Grave" },
+      { article: "B.1.10", infraction: "Propaganda o proselitismo político / reuniones no autorizadas en el centro de trabajo.", severity: "Grave" },
+      { article: "B.1.11", infraction: "Omisión de reportar relaciones románticas en contextos de conflicto (jefe-subordinado, etc.).", severity: "Grave" },
+      { article: "B.1.12", infraction: "No seguir instrucciones relativas al desempeño o reincidencia en bajo desempeño/métricas.", severity: "Grave" },
+      { article: "B.1.13", infraction: "Fumar (incluye electrónicos) en zonas prohibidas.", severity: "Grave" },
+      { article: "B.1.14", infraction: "Incumplimiento de exámenes periódicos o anuales de salud.", severity: "Grave" },
+      { article: "B.1.15", infraction: "Incumplimiento de participación en programas/simulacros de salud/seguridad.", severity: "Grave" },
+      { article: "B.1.16", infraction: "Negativa a reasignaciones/cambios de lugar u horario justificados.", severity: "Grave" },
+      { article: "B.1.17", infraction: "Negativa a someterse a una inspección razonable (si la ley lo permite).", severity: "Grave" },
+      { article: "B.1.18", infraction: "Negativa a instrucciones o acciones que pongan en riesgo la salud/seguridad.", severity: "Grave" },
+      { article: "B.1.19", infraction: "Insubordinación: negativa a obedecer una orden legítima o tarea asignada sin justificación.", severity: "Grave" },
+      { article: "B.1.20", infraction: "Incumplimiento de disposiciones del Contrato y Reglamento Interno de Trabajo.", severity: "Grave" },
+      { article: "B.1.21", infraction: "Ingreso no autorizado de artículos personales a áreas restringidas (COPC/PCI).", severity: "Grave" },
+      { article: "B.1.22", infraction: "Dejar desatendido y desbloqueado el equipo de trabajo (pantalla, laptop, gavetero, etc.).", severity: "Grave" },
+      { article: "B.1.23", infraction: "Descargar/instalar aplicaciones o SO no autorizados en equipos de la Compañía.", severity: "Grave" },
+      { article: "B.1.24", infraction: "Ingresar dispositivos personales/medios de almacenamiento a áreas productivas sin autorización.", severity: "Grave" },
       { article: "B.1.25", infraction: "Manipulación de equipos informáticos propiedad del Cliente.", severity: "Grave" },
-      { article: "B.1.26", infraction: "Tomar ventaja de alguien mediante manipulación, ocultamiento, uso abusivo de información privilegiada, tergiversación de hechos, y cualquier tipo de práctica injusta.", severity: "Grave" },
-      { article: "B.1.27", infraction: "No revelar o procurar la aprobación de acciones u operaciones que entrañen una situación de conflicto de intereses, de acuerdo con la política de la Empresa, u otras violaciones de normas de conflicto de interés y políticas de la Empresa similares en su naturaleza.", severity: "Grave" },
-      { article: "B.1.28", infraction: "Negligencia intencional y premeditada para revelar información material (ej. Cualquier información que pudiera afectar potencialmente el precio de acciones, y cualquier otro tipo información) incluyendo resultado de ganancias, transacciones con partes vinculadas, y fuera del Balance.", severity: "Grave" },
-      { article: "B.1.29", infraction: "Negligencia intencional y premeditada, o falta de apreciación de la eficacia de los controles y procedimientos de divulgación, y controles internos, para tomar decisiones o acciones correctivas con respecto a debilidades o deficiencias detectadas.", severity: "Grave" },
-      { article: "B.1.30", infraction: "Negligencia intencional y premeditada, o falla para valorar, administrar, restringir o minimizar riesgos relacionados en el desarrollo de los negocios de la Empresa, para evitar afectaciones al valor de las acciones.", severity: "Grave" },
-      { article: "B.1.31", infraction: "Retraso o falta, por parte de los individuos responsables, de informar cualquier daño o defecto de los bienes de la Empresa, tales como máquinas en funcionamiento y otras instalaciones/equipos, habiendo tenido conocimiento previo.", severity: "Grave" },
-      { article: "B.1.32", infraction: "Retraso o falta, por parte de los individuos responsables, de informar cualquier daño o defecto de los bienes de la Empresa, tales como máquinas en funcionamiento y otras instalaciones/equipos, habiendo tenido conocimiento previo.", severity: "Grave" },
-      { article: "B.1.33", infraction: "Retraso o falta, por parte de los individuos responsables, de informar o corregir información incorrecta e inexacta, habiendo tenido conocimiento previo.", severity: "Grave" },
-      { article: "B.1.34", infraction: "Negligencia de la responsabilidad en el ejercicio oportuno y preciso de las funciones de supervisión y liderazgo, que afecten a Compañer@s de trabajo, miembros de su equipo, la Empresa y sus socios comerciales, tales como, pero no limitado a: Tareas relacionadas con la nómina y el cronometraje de procesos; Implementación de Gestión del Rendimiento; Presentación de los documentos de baja de las Personas Trabajadoras (ej. carta de renuncia, pre‑aviso, control de horas, y formulario de aceptación de renuncia); Monitorear el cumplimiento de los acuerdos de nivel de servicio; Informar violaciones al régimen disciplinario", severity: "Grave" },
-      { article: "B.1.35", infraction: "Incumplimiento o falta deliberada, por parte de un Supervisor o Gerente, de actuar acorde con su responsabilidad de manera oportuna y precisa, tales como, pero no limitado a: Informar una infracción al régimen disciplinario, por una Persona Trabajadora bajo su dirección, para efectos de protegerlo; Presentar reportes de horas [extras], PAR/Scorecards, documentos de baja laboral (carta de renuncia, reporte de horas, aceptación de renuncia), a cambio de una ganancia indebida.", severity: "Grave" },
-      { article: "B.1.36", infraction: "Realizar, participar en actos, o estar involucrado en casos que afecten la buena imagen de la Empresa, de sus Clientes, y Personas trabajadoras. Y cualquier otro acto que desacredite a la empresa y partes vinculadas que promueva la hostilidad o incite la desmoralización de las personas trabajadoras.", severity: "Grave" },
-      { article: "B.1.37", infraction: "Registrar su salida antes de la hora oficial de salida, de forma no autorizada.", severity: "Grave" },
-      { article: "C.1.1", infraction: "Provocar, instigar o participar en una pelea o disturbios dentro de la empresa, en sus alrededores, o instalaciones relacionadas con el trabajo", severity: "Muy grave" },
-      { article: "C.1.2", infraction: "Realizar acercamientos no deseados, hacia otras personas, hostigamiento, que sean percibidos como acoso, asedio o intimidación.", severity: "Muy grave" },
-      { article: "C.1.3", infraction: "Intentar amenazar o causar lesiones a un superior, Compañer@ de trabajo, cliente, o cualquier otra persona que mantiene relaciones comerciales con la Empresa por cualquier causa relacionada con el trabajo dentro o fuera de las instalaciones de la empresa.", severity: "Muy grave" },
-      { article: "C.1.4", infraction: "Realizar insinuaciones no deseadas, hostigamiento, asedio, intimidacion o solicitar algún favor sexual u otra conducta verbal, escrita, visual, o física de naturaleza sexual que contribuya a un ambiente de trabajo intimidante, hostil u ofensivo.", severity: "Muy grave" },
-      { article: "C.1.5", infraction: "Clara actitud discriminatoria hacia personas, incluyendo, pero no limitado a razones basadas en etnia, raza, alienación política, religiosa, preferencia o identidad de género, capacidades diferentes, entre otros.", severity: "Muy grave" },
-      { article: "C.1.6", infraction: "Violaciones a la política de Seguridad de Información, incluyendo, pero no limitado a la divulgación no autorizada, copia o difusión de información propia que puede causar daño, directa o indirectamente, a un individuo, grupo, Departamento, la Empresa, y/o otras partes interesadas", severity: "Muy grave" },
-      { article: "C.1.7", infraction: "Sabotaje o cualquier acto deliberado que detenga, retrase, o interrumpa las operaciones de la Empresa.", severity: "Muy grave" },
-      { article: "C.1.8", infraction: "Mala práctica o comisión de un hecho injustificado en el ejercicio de sus funciones, que es escalada por el cliente o por el Executive Security Team, en la que sin embargo no se identifica intención de fraude por parte de la persona trabajadora", severity: "Muy grave" },
-      { article: "C.1.9", infraction: "Consumir, beber, Presentarse a trabajar, o tratar de ingresar a la Empresa bajo la influencia del alcohol o drogas /sustancias prohibidas. Incluye posesión, distribución, manufactura, consumo, venta, compra, y otras acciones relacionadas con sustancias alcohólicas e ilícitas", severity: "Muy grave" },
-      { article: "C.1.10", infraction: "Usar el carnet o cualquier otro artículo que le identifique como persona trabajadora de la empresa en bares, licorerías o lugares públicos no apropiados. O usar los mismos para participar en actividades políticas.", severity: "Muy grave" },
-      { article: "C.1.11", infraction: "Poseer, transferir, vender o utilizar armas, instrumentos peligrosos o parafernalia relacionada donde la Compañía lleva a cabo sus negocios. Esta restricción se aplica independientemente de si un empleado está autorizado (si corresponde) para portar un arma y se extiende a todas las áreas, incluidos, entre otros, los estacionamientos, vehículos personales y eventos patrocinados por la Compañía.", severity: "Muy grave" },
-      { article: "C.1.12", infraction: "Posesión, venta o estar bajo los efectos de drogas /sustancias prohibidas, independientemente de la forma y cantidad.", severity: "Muy grave" },
-      { article: "C.1.13", infraction: "Obstrucción de una investigación, otorgar declaraciones o información falsa, ocultar materiales, hechos o pruebas en una investigación llevada a cabo por cualquiera de los Comités oficiales de la Empresa instancia gubernamental regulatoria, o judicial, con jurisdicción.", severity: "Muy grave" },
-      { article: "C.1.14", infraction: "Maliciosa y premeditadamente acusar a otros de falsos errores o faltas sin fundamento.", severity: "Muy grave" },
-      { article: "C.1.15", infraction: "Cambiar la configuración de equipos de propiedad de la Empresa siempre y cuando este debidamente comprobando (Autoexec.bat, config.sys, configuración de Windows, aspectos de seguridad, la configuración de proyectos.)", severity: "Muy grave" },
-      { article: "C.1.16", infraction: "Visualización o almacenamiento de material pornográfico utilizado o asociado con el uso de recursos de la Empresa.", severity: "Muy grave" },
-      { article: "C.1.17", infraction: "Cargar, transmitir o hacer clic en enlaces en sistemas informáticos/correos electrónicos que contengan virus, caballos de Troya, gusanos u otros programas dañinos a sabiendas.", severity: "Muy grave" },
-      { article: "C.1.18", infraction: "Uso inapropiado o malicioso de información confidencial o propietaria de la Compañía, el cliente o el usuario (incluidas contraseñas o códigos de acceso) cuando se les ha confiado la custodia de esta.", severity: "Muy grave" },
-      { article: "C.1.19", infraction: "Negociar con información privilegiada de la Empresa, sus subsidiarias y afiliadas que utilizan información económicamente sensible, que normalmente no está disponible al público, y es obtenida por razón de su posición, contacto dentro de la Empresa, o de otro tipo.", severity: "Muy grave" },
-      { article: "C.1.20", infraction: "Solicitar o recibir dinero, regalías, repartir beneficios, contribuciones, o cualquier beneficio personal entendiéndose estos como sobornos, para cualquier propósito que sea – no exentos por las Políticas aplicables de la Empresa – de terceras partes con quienes la Empresa desarrolla negocios, o se propone hacerlos.", severity: "Muy grave" },
-      { article: "C.1.21", infraction: "Tergiversar intencionalmente u causar tergiversación por parte de otros, de datos de la Empresa de cara a terceros, ya sea dentro o fuera de la Empresa, incluyendo Estados de Resultado, transacciones con partes vinculadas, y fuera del Balance.", severity: "Muy grave" },
-      { article: "C.1.22", infraction: "Incumplimiento fraudulento y/o deliberado de los controles y procedimientos de divulgación de la Empresa, y controles internos aplicables al área específica de la Persona trabajadora en cuestión.", severity: "Muy grave" },
-      { article: "C.1.23", infraction: "Soborno o actividades corruptas con Agentes de Gobierno, o Reguladores en relación con cualquier transacción o negocio de la Empresa.", severity: "Muy grave" },
-      { article: "C.1.25", infraction: "Abuso de autoridad relacionada con la función de supervisión o liderazgo.", severity: "Muy grave" },
-      { article: "C.1.26", infraction: "Conducta inapropiada de un miembro del equipo Gerencial en relación con el cumplimiento de sus deberes o cualquier acto que pueda conducir a la pérdida de confianza.", severity: "Muy grave" },
-      { article: "C.1.33", infraction: "Cualquier acto que desacredite a la Empresa y partes vinculadas, que promueva la hostilidad o incite desmoralización entre las Personas Trabajadoras.", severity: "Muy grave" },
-      { article: "C.1.34", infraction: "Ausencia por tres (3) días hábiles consecutivos sin previo aviso o autorización.", severity: "Muy grave" },
-      { article: "C.1.36", infraction: "Discusión en línea, publicación o transmisión de imágenes sexualmente explícitas y otras imágenes ofensivas, intolerantes, de odio o racialmente ofensivas utilizando las computadoras propiedad de la empresa, sistemas de correo electrónico, programas de computadora y otros dispositivos propiedad de la Compañía.", severity: "Muy grave" }
+      { article: "B.1.26", infraction: "Manipulación/ocultamiento/uso abusivo de información privilegiada u otras prácticas injustas.", severity: "Grave" },
+      { article: "B.1.27", infraction: "No revelar/gestionar conflictos de interés según políticas de la Empresa.", severity: "Grave" },
+      { article: "B.1.28", infraction: "No revelar información material relevante (p. ej., resultados, transacciones).", severity: "Grave" },
+      { article: "B.1.29", infraction: "No tomar acciones ante debilidades de control y divulgación detectadas.", severity: "Grave" },
+      { article: "B.1.30", infraction: "No gestionar riesgos del negocio que afecten el valor de las acciones.", severity: "Grave" },
+      { article: "B.1.31", infraction: "No informar daños/defectos en bienes de la Empresa con conocimiento previo.", severity: "Grave" },
+      { article: "B.1.32", infraction: "Reincidencia en no informar daños/defectos de bienes de la Empresa.", severity: "Grave" },
+      { article: "B.1.33", infraction: "No informar o corregir información incorrecta con conocimiento previo.", severity: "Grave" },
+      { article: "B.1.34", infraction: "Negligencia en funciones de supervisión/liderazgo (nómina, desempeño, bajas, SLAs, etc.).", severity: "Grave" },
+      { article: "B.1.35", infraction: "Incumplimiento deliberado de responsabilidades por parte de un supervisor/gerente.", severity: "Grave" },
+      { article: "B.1.36", infraction: "Actos que afecten la buena imagen de la Empresa/Clientes/Personas trabajadoras.", severity: "Grave" },
+      { article: "B.1.37", infraction: "Registrar salida antes de la hora oficial de forma no autorizada.", severity: "Grave" },
+
+      { article: "C.1.1",  infraction: "Provocar/instigar/participar en pelea o disturbios en o cerca del trabajo.", severity: "Muy grave" },
+      { article: "C.1.2",  infraction: "Acoso/hostigamiento no deseado.", severity: "Muy grave" },
+      { article: "C.1.3",  infraction: "Amenazar o causar lesiones a superiores, compañeros, clientes u otros relacionados.", severity: "Muy grave" },
+      { article: "C.1.4",  infraction: "Insinuaciones/solicitudes sexuales u otra conducta sexual que genere ambiente hostil.", severity: "Muy grave" },
+      { article: "C.1.5",  infraction: "Discriminación por etnia, raza, religión, género, etc.", severity: "Muy grave" },
+      { article: "C.1.6",  infraction: "Violaciones a Seguridad de Información (divulgación/copia/difusión no autorizada).", severity: "Muy grave" },
+      { article: "C.1.7",  infraction: "Sabotaje o actos deliberados que interrumpan operaciones.", severity: "Muy grave" },
+      { article: "C.1.8",  infraction: "Mala práctica escalada por cliente/seguridad sin identificar fraude del empleado.", severity: "Muy grave" },
+      { article: "C.1.9",  infraction: "Alcohol/drogas: presentarse, consumir, poseer, distribuir, etc.", severity: "Muy grave" },
+      { article: "C.1.10", infraction: "Usar carnet en lugares inapropiados o para actividades políticas.", severity: "Muy grave" },
+      { article: "C.1.11", infraction: "Poseer/transferir/vender/usar armas o instrumentos peligrosos en áreas de negocio.", severity: "Muy grave" },
+      { article: "C.1.12", infraction: "Posesión/venta/estar bajo efectos de drogas prohibidas.", severity: "Muy grave" },
+      { article: "C.1.13", infraction: "Obstrucción de investigación; información falsa u ocultamiento.", severity: "Muy grave" },
+      { article: "C.1.14", infraction: "Acusar maliciosamente de falsos errores o faltas.", severity: "Muy grave" },
+      { article: "C.1.15", infraction: "Cambiar configuración de equipos de la Empresa (seguridad/sistema) comprobado.", severity: "Muy grave" },
+      { article: "C.1.16", infraction: "Visualización/almacenamiento de material pornográfico con recursos de la Empresa.", severity: "Muy grave" },
+      { article: "C.1.17", infraction: "Propagar malware a sabiendas (virus, troyanos, gusanos).", severity: "Muy grave" },
+      { article: "C.1.18", infraction: "Uso inapropiado o malicioso de información confidencial/propietaria.", severity: "Muy grave" },
+      { article: "C.1.19", infraction: "Negociar con información privilegiada.", severity: "Muy grave" },
+      { article: "C.1.20", infraction: "Soborno/corrupción para obtener beneficios.", severity: "Muy grave" },
+      { article: "C.1.21", infraction: "Tergiversar datos de la Empresa hacia terceros.", severity: "Muy grave" },
+      { article: "C.1.22", infraction: "Incumplimiento fraudulento de controles/procedimientos de divulgación.", severity: "Muy grave" },
+      { article: "C.1.23", infraction: "Soborno/corrupción con agentes de gobierno o reguladores.", severity: "Muy grave" },
+      { article: "C.1.24", infraction: "Usar autoridad para vender productos a subordinados.", severity: "Muy grave" },
+      { article: "C.1.25", infraction: "Abuso de autoridad en funciones de supervisión/liderazgo.", severity: "Muy grave" },
+      { article: "C.1.26", infraction: "Conducta inapropiada gerencial que conduzca a pérdida de confianza.", severity: "Muy grave" },
+      { article: "C.1.27", infraction: "Marcar/registrar entradas o salidas por otra persona o conspirar para ello.", severity: "Muy grave" },
+      { article: "C.1.28", infraction: "Informes falsos que ocasionen pérdida de ingresos o daño a imagen.", severity: "Muy grave" },
+      { article: "C.1.29", infraction: "Presentar documentos falsos o alterados (subsidios, constancias, récord policial, etc.).", severity: "Muy grave" },
+      { article: "C.1.30", infraction: "Alteración maliciosa de información en sistemas o BD de la Empresa/Clientes.", severity: "Muy grave" },
+      { article: "C.1.31", infraction: "Falsificación/apropiación/no rendir cuentas de fondos de la Empresa.", severity: "Muy grave" },
+      { article: "C.1.32", infraction: "Complicidad para falsificar o apropiarse indebidamente de fondos.", severity: "Muy grave" },
+      { article: "C.1.33", infraction: "Actos que desacrediten a la Empresa y promuevan hostilidad/desmoralización.", severity: "Muy grave" },
+      { article: "C.1.34", infraction: "Ausencia por tres días hábiles consecutivos sin aviso/autorización.", severity: "Muy grave" },
+      { article: "C.1.35", infraction: "Piratería/copia o divulgación no autorizada de propiedad intelectual/credenciales.", severity: "Muy grave" },
+      { article: "C.1.36", infraction: "Publicar/transmitir imágenes sexualmente explícitas u ofensivas con recursos de la Empresa.", severity: "Muy grave" },
+      { article: "C.1.37", infraction: "Obtención no autorizada (o soborno para obtener) info confidencial.", severity: "Muy grave" },
+      { article: "C.1.38", infraction: "Uso malicioso de información confidencial/propietaria bajo su custodia.", severity: "Muy grave" },
+      { article: "C.1.39", infraction: "Revelar ofertas de adquisición o datos relacionados a personas no autorizadas.", severity: "Muy grave" },
+      { article: "C.1.40", infraction: "Recibir préstamo o garantía de un tercero por su posición en la Compañía.", severity: "Muy grave" }
     ];
 
+    /* ========= CATEGORÍAS (tu mapeo) ========= */
     const categoriasPorArticulo = {
-      "A.1.17": "Asistencia y puntualidad",
-      "A.1.18": "Asistencia y puntualidad",
-      "A.1.19": "Asistencia y puntualidad",
-      "A.1.20": "Asistencia y puntualidad",
-      "C.1.34": "Asistencia y puntualidad",
-      "B.1.8": "Asistencia y puntualidad",
-      "B.1.16": "Desobediencia / Insubordinación",
-      "B.1.18": "Desobediencia / Insubordinación",
-      "B.1.19": "Desobediencia / Insubordinación",
-      "B.1.17": "Desobediencia / Insubordinación",
-      "B.1.12": "Desobediencia / Insubordinación",
-      "B.1.4": "Conducta y comportamiento",
-      "B.1.5": "Conducta y comportamiento",
-      "B.1.36": "Conducta y comportamiento",
-      "C.1.33": "Conducta y comportamiento",
-      "C.1.2": "Conducta y comportamiento",
-      "C.1.4": "Conducta y comportamiento",
-      "C.1.5": "Conducta y comportamiento",
-      "C.1.1": "Conducta y comportamiento",
-      "C.1.3": "Conducta y comportamiento",
-      "B.1.7": "Conducta y comportamiento",
-      "A.1.8": "Seguridad y control de accesos",
-      "A.1.11": "Seguridad y control de accesos",
-      "A.1.12": "Seguridad y control de accesos",
-      "A.1.13": "Seguridad y control de accesos",
-      "B.1.2": "Seguridad y control de accesos",
-      "B.1.21": "Seguridad y control de acessos",
-      "A.1.7": "Uso indebido de recursos / TI",
-      "A.1.9": "Uso indebido de recursos / TI",
-      "A.1.10": "Uso indebido de recursos / TI",
-      "C.1.15": "Uso indebido de recursos / TI",
-      "C.1.30": "Uso indebido de recursos / TI",
-      "B.1.22": "Uso indebido de recursos / TI",
-      "B.1.23": "Uso indebido de recursos / TI",
-      "B.1.25": "Uso indebido de recursos / TI",
-      "A.1.14": "Uso indebido de recursos / TI",
-      "A.1.15": "Uso indebido de recursos / TI",
-      "C.1.17": "Uso indebido de recursos / TI",
-      "C.1.6": "Uso indebido de recursos / TI",
-      "C.1.7": "Uso indebido de recursos / TI",
-      "C.1.16": "Uso indebido de recursos / TI",
-      "C.1.36": "Uso indebido de recursos / TI",
-      "B.1.26": "Ética e integridad",
-      "B.1.27": "Ética e integridad",
-      "C.1.18": "Ética e integridad",
-      "C.1.19": "Ética e integridad",
-      "C.1.20": "Ética e integridad",
-      "C.1.23": "Ética e integridad",
-      "C.1.29": "Ética e integridad",
-      "C.1.31": "Ética e integridad",
-      "C.1.32": "Ética e integridad",
-      "C.1.13": "Ética e integridad",
-      "C.1.14": "Ética e integridad",
-      "C.1.21": "Ética e integridad",
-      "C.1.22": "Ética e integridad",
-      "C.1.28": "Ética e integridad",
-      "B.1.36": "Imagen corporativa",
-      "C.1.10": "Imagen corporativa",
-      "C.1.9": "Salud y consumo",
-      "C.1.12": "Salud y consumo",
-      "B.1.13": "Salud y consumo",
-      "B.1.14": "Salud y consumo",
-      "B.1.15": "Salud y consumo",
-      "B.1.34": "Supervisión y liderazgo",
-      "B.1.35": "Supervisión y liderazgo",
-      "C.1.25": "Supervisión y liderazgo",
-      "C.1.26": "Supervisión y liderazgo",
-      "A.1.1": "Otros",
-      "A.1.3": "Otros",
-      "A.1.5": "Otros",
-      "A.1.6": "Otros",
-      "A.1.10": "Otros",
-      "B.1.10": "Otros",
-      "B.1.11": "Otros",
-      "B.1.31": "Otros",
-      "B.1.32": "Otros",
-      "B.1.33": "Otros"
+      "A.1.17":"Asistencia y puntualidad","A.1.18":"Asistencia y puntualidad","A.1.19":"Asistencia y puntualidad","A.1.20":"Asistencia y puntualidad","C.1.34":"Asistencia y puntualidad","B.1.8":"Asistencia y puntualidad",
+      "B.1.16":"Desobediencia / Insubordinación","B.1.18":"Desobediencia / Insubordinación","B.1.19":"Desobediencia / Insubordinación","B.1.17":"Desobediencia / Insubordinación","B.1.12":"Desobediencia / Insubordinación",
+      "B.1.4":"Conducta y comportamiento","B.1.5":"Conducta y comportamiento","B.1.36":"Conducta y comportamiento","C.1.33":"Conducta y comportamiento","C.1.2":"Conducta y comportamiento","C.1.4":"Conducta y comportamiento","C.1.5":"Conducta y comportamiento","C.1.1":"Conducta y comportamiento","C.1.3":"Conducta y comportamiento","B.1.7":"Conducta y comportamiento",
+      "A.1.8":"Seguridad y control de accesos","A.1.11":"Seguridad y control de accesos","A.1.12":"Seguridad y control de accesos","A.1.13":"Seguridad y control de accesos","B.1.2":"Seguridad y control de accesos","B.1.21":"Seguridad y control de accesos",
+      "A.1.7":"Uso indebido de recursos / TI","A.1.9":"Uso indebido de recursos / TI","A.1.10":"Uso indebido de recursos / TI","C.1.15":"Uso indebido de recursos / TI","C.1.30":"Uso indebido de recursos / TI","B.1.22":"Uso indebido de recursos / TI","B.1.23":"Uso indebido de recursos / TI","B.1.25":"Uso indebido de recursos / TI","A.1.14":"Uso indebido de recursos / TI","A.1.15":"Uso indebido de recursos / TI","C.1.17":"Uso indebido de recursos / TI","C.1.6":"Uso indebido de recursos / TI","C.1.7":"Uso indebido de recursos / TI","C.1.16":"Uso indebido de recursos / TI","C.1.36":"Uso indebido de recursos / TI",
+      "B.1.26":"Ética e integridad","B.1.27":"Ética e integridad","C.1.18":"Ética e integridad","C.1.19":"Ética e integridad","C.1.20":"Ética e integridad","C.1.23":"Ética e integridad","C.1.29":"Ética e integridad","C.1.31":"Ética e integridad","C.1.32":"Ética e integridad","C.1.13":"Ética e integridad","C.1.14":"Ética e integridad","C.1.21":"Ética e integridad","C.1.22":"Ética e integridad","C.1.28":"Ética e integridad",
+      "B.1.36":"Imagen corporativa","C.1.10":"Imagen corporativa",
+      "C.1.9":"Salud y consumo","C.1.12":"Salud y consumo","B.1.13":"Salud y consumo","B.1.14":"Salud y consumo","B.1.15":"Salud y consumo",
+      "B.1.34":"Supervisión y liderazgo","B.1.35":"Supervisión y liderazgo","C.1.25":"Supervisión y liderazgo","C.1.26":"Supervisión y liderazgo",
+      "A.1.1":"Otros","A.1.3":"Otros","A.1.5":"Otros","A.1.6":"Otros","A.1.10":"Otros","B.1.10":"Otros","B.1.11":"Otros","B.1.31":"Otros","B.1.32":"Otros","B.1.33":"Otros"
     };
 
-    function classifyType(severity) {
-      return severity;
-    }
+    /* ========= LÓGICA ========= */
+    const searchInput   = document.getElementById('searchInput');
+    const severitySelect= document.getElementById('severitySelect');
+    const categorySelect= document.getElementById('categorySelect');
+    const limitSelect   = document.getElementById('limitSelect');
+    const clearBtn      = document.getElementById('clearBtn');
+    const exportBtn     = document.getElementById('exportBtn');
+    const tableBody     = document.getElementById('tableBody');
 
-    function prepareData(matrix) {
-      return matrix.map(row => {
+    function classifyType(severity){ return severity; }
+
+    function prepareData(matrix){
+      return matrix.map(row=>{
         const categoria = categoriasPorArticulo[row.article] || 'Otros';
         const type = classifyType(row.severity);
         return { ...row, categoria, type };
@@ -314,102 +340,104 @@
     }
 
     let prepared = prepareData(disciplinaryMatrix);
-    let currentSearch = '';
+    let currentSearch   = '';
     let currentSeverity = 'Todas';
     let currentCategory = 'Todas';
+    let currentLimit    = parseInt(limitSelect.value,10);
 
-    const searchInput = document.getElementById('searchInput');
-    const severitySelect = document.getElementById('severitySelect');
-    const categorySelect = document.getElementById('categorySelect');
-    const clearBtn = document.getElementById('clearBtn');
-    const tableBody = document.getElementById('tableBody');
-
-    function populateCategoryOptions() {
-      const categoriasUnicas = Array.from(new Set(prepared.map(r => r.categoria)));
-      categoriasUnicas.sort();
-      categoriasUnicas.forEach(cat => {
-        const opt = document.createElement('option');
-        opt.value = cat;
-        opt.textContent = cat;
+    function populateCategoryOptions(){
+      const set = new Set(prepared.map(r=>r.categoria));
+      [...set].sort().forEach(cat=>{
+        const opt=document.createElement('option');
+        opt.value=cat; opt.textContent=cat;
         categorySelect.appendChild(opt);
       });
     }
 
-    function filterAndRender() {
-      const filtered = prepared
-        .filter(r => {
-          const matchSearch = currentSearch === '' ||
-            r.infraction.toLowerCase().includes(currentSearch) ||
-            r.article.toLowerCase().includes(currentSearch);
-          const matchSeverity = currentSeverity === 'Todas' || r.type === currentSeverity;
-          const matchCategory = currentCategory === 'Todas' || r.categoria === currentCategory;
-          return matchSearch && matchSeverity && matchCategory;
-        });
+    function filterAndRender(){
+      const filtered = prepared.filter(r=>{
+        const q = currentSearch;
+        const matchSearch = !q || r.infraction.toLowerCase().includes(q) || r.article.toLowerCase().includes(q);
+        const matchSeverity = currentSeverity==='Todas' || r.type===currentSeverity;
+        const matchCategory = currentCategory==='Todas' || r.categoria===currentCategory;
+        return matchSearch && matchSeverity && matchCategory;
+      });
 
-      tableBody.innerHTML = '';
-      if (filtered.length === 0) {
-        const tr = document.createElement('tr');
-        const td = document.createElement('td');
-        td.colSpan = 4;
-        td.textContent = 'No se encontraron resultados';
-        td.style.textAlign = 'center';
-        tr.appendChild(td);
-        tableBody.appendChild(tr);
+      const rows = filtered.slice(0, currentLimit);
+
+      tableBody.innerHTML='';
+      if(rows.length===0){
+        const tr=document.createElement('tr');
+        const td=document.createElement('td');
+        td.colSpan=4; td.textContent='No se encontraron resultados'; td.style.textAlign='center';
+        tr.appendChild(td); tableBody.appendChild(tr);
         return;
       }
 
-      filtered.forEach(r => {
-        const tr = document.createElement('tr');
+      rows.forEach(r=>{
+        const tr=document.createElement('tr');
 
-        const tdArticle = document.createElement('td');
-        tdArticle.textContent = r.article;
-        tr.appendChild(tdArticle);
+        const tdA=document.createElement('td'); tdA.textContent=r.article; tr.appendChild(tdA);
+        const tdI=document.createElement('td'); tdI.textContent=r.infraction; tr.appendChild(tdI);
 
-        const tdInfraction = document.createElement('td');
-        tdInfraction.textContent = r.infraction;
-        tr.appendChild(tdInfraction);
+        const tdS=document.createElement('td');
+        tdS.textContent=r.type;
+        tdS.classList.add('severity-' + r.type.replace(/\s+/g,'').toLowerCase().replace('muygrave','Muygrave'));
+        // asegurar clase consistente en CSS:
+        tdS.classList.add('severity-' + r.type.replace(/\s+/g,'')); 
+        tr.appendChild(tdS);
 
-        const tdSeverity = document.createElement('td');
-        tdSeverity.textContent = r.type;
-        tdSeverity.classList.add('severity-' + r.type.replace(/\s+/g, ''));
-        tr.appendChild(tdSeverity);
-
-        const tdCategory = document.createElement('td');
-        const spanBadge = document.createElement('span');
-        spanBadge.textContent = r.categoria;
-        spanBadge.classList.add('badge');
-        tdCategory.appendChild(spanBadge);
-        tr.appendChild(tdCategory);
+        const tdC=document.createElement('td');
+        const badge=document.createElement('span'); badge.className='badge'; badge.textContent=r.categoria;
+        tdC.appendChild(badge); tr.appendChild(tdC);
 
         tableBody.appendChild(tr);
       });
     }
 
-    searchInput.addEventListener('input', e => {
-      currentSearch = e.target.value.trim().toLowerCase();
-      filterAndRender();
-    });
-    severitySelect.addEventListener('change', e => {
-      currentSeverity = e.target.value;
-      filterAndRender();
-    });
-    categorySelect.addEventListener('change', e => {
-      currentCategory = e.target.value;
-      filterAndRender();
-    });
-    clearBtn.addEventListener('click', () => {
-      searchInput.value = '';
-      severitySelect.value = 'Todas';
-      categorySelect.value = 'Todas';
-      currentSearch = '';
-      currentSeverity = 'Todas';
-      currentCategory = 'Todas';
-      filterAndRender();
-    });
+    function exportCSV(){
+      const headers = ['Artículo','Infracción','Severidad','Categoría'];
+      const filtered = prepared.filter(r=>{
+        const q=currentSearch;
+        const matchSearch = !q || r.infraction.toLowerCase().includes(q) || r.article.toLowerCase().includes(q);
+        const matchSeverity = currentSeverity==='Todas' || r.type===currentSeverity;
+        const matchCategory = currentCategory==='Todas' || r.categoria===currentCategory;
+        return matchSearch && matchSeverity && matchCategory;
+      });
+      const rows = filtered.slice(0, currentLimit);
+      const csv = [headers.join(',')].concat(
+        rows.map(x=>[
+          x.article,
+          '"' + (x.infraction || '').replace(/"/g,'""') + '"',
+          x.type,
+          '"' + (x.categoria || '').replace(/"/g,'""') + '"'
+        ].join(','))
+      ).join('\n');
 
+      const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'matriz_disciplinaria.csv';
+      document.body.appendChild(a); a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
+    }
+
+    /* Eventos */
+    searchInput.addEventListener('input', e=>{ currentSearch = e.target.value.trim().toLowerCase(); filterAndRender(); });
+    severitySelect.addEventListener('change', e=>{ currentSeverity = e.target.value; filterAndRender(); });
+    categorySelect.addEventListener('change', e=>{ currentCategory = e.target.value; filterAndRender(); });
+    limitSelect.addEventListener('change', e=>{ currentLimit = parseInt(e.target.value,10); filterAndRender(); });
+
+    clearBtn.addEventListener('click', ()=>{
+      searchInput.value=''; severitySelect.value='Todas'; categorySelect.value='Todas'; limitSelect.value='10';
+      currentSearch=''; currentSeverity='Todas'; currentCategory='Todas'; currentLimit=10;
+      filterAndRender();
+    });
+    exportBtn.addEventListener('click', exportCSV);
+
+    /* Init */
     populateCategoryOptions();
     filterAndRender();
   </script>
-
 </body>
 </html>
