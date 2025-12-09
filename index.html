@@ -1,443 +1,1093 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Matriz Disciplinaria — Concentrix</title>
-
-  <!-- Google Fonts: Montserrat -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"/>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ronald Guido | Training & Quality Roadshow</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root{
-      /* Paleta inspirada en tu slide */
-      --cnx-aqua:   #2DE0D1;
-      --cnx-teal:   #19C2B5;
-      --cnx-navy:   #22356F;
-      --cnx-yellow: #F5D654;
-      --cnx-pink:   #DB3D86;
-      --cnx-gray:   #F4F4F6;
-      --cnx-text:   #232323;
-      --white:      #FFFFFF;
+    :root {
+      /* inspired palette */
+      --cnx-blue: #0033a0;
+      --cnx-teal: #009ca6;
+      --cnx-aqua: #00b5e2;
+      --cnx-green: #78be20;
+      --cnx-yellow: #ffd100;
+      --cnx-orange: #ff6e14;
+      /* Neutral palette */
+      --gray-900: #0c1020;
+      --gray-800: #15192b;
+      --gray-700: #20253b;
+      --gray-100: #f5f6fb;
+      --text-main: #fdfdfd;
+      --text-muted: #a7b0d1;
+      --radius-xl: 24px;
+      --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.35);
+      --border-subtle: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    *{ box-sizing: border-box; }
-    body{
-      font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    * {
+      box-sizing: border-box;
       margin: 0;
-      background: var(--cnx-gray);
-      color: var(--cnx-text);
-      line-height: 1.4;
+      padding: 0;
     }
 
-    header{
-      padding: 2.25rem 1rem 1.25rem;
-      background: linear-gradient(180deg, #ffffff 0%, #f9ffff 100%);
-      border-bottom: 4px solid var(--cnx-aqua);
+    html,
+    body {
+      height: 100%;
+      scroll-behavior: smooth;
     }
-    .container{
-      max-width: 1100px;
+
+    body {
+      font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(0, 181, 226, 0.18), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(120, 190, 32, 0.16), transparent 55%),
+        radial-gradient(circle at 0% 100%, rgba(255, 110, 20, 0.18), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(0, 51, 160, 0.7), rgba(2, 7, 32, 0.95) 65%);
+      -webkit-font-smoothing: antialiased;
+      padding: 32px 12px;
+    }
+
+    .shell {
+      max-width: 1160px;
       margin: 0 auto;
-      padding: 0 1rem;
+      padding: 28px 28px 32px;
+      border-radius: 32px;
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 55%) rgba(8, 10, 27, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(18px);
+      position: relative;
+      overflow: hidden;
     }
-    h1{
-      margin: 0 0 .35rem;
-      color: var(--cnx-navy);
+
+    .shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(0, 181, 226, 0.18), transparent 45%, rgba(255, 110, 20, 0.16));
+      mix-blend-mode: soft-light;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .shell-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 2.4fr) minmax(0, 2.2fr);
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 840px) {
+      header {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .hero-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(12px);
+      background: rgba(7, 10, 32, 0.74);
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--cnx-green), var(--cnx-teal));
+      box-shadow: 0 0 0 4px rgba(120, 190, 32, 0.25);
+    }
+
+    .pill-pill {
+      border-color: rgba(0, 181, 226, 0.55);
+      color: #d3f6ff;
+      background: radial-gradient(circle at 0% 0%, rgba(0, 181, 226, 0.38), rgba(7, 10, 32, 0.9));
+    }
+
+    h1 {
+      font-size: clamp(26px, 3vw, 32px);
+      line-height: 1.15;
+      margin-bottom: 10px;
       font-weight: 700;
-      letter-spacing: .2px;
+      letter-spacing: 0.02em;
     }
-    .subtitle{
-      margin: 0;
-      color: #4b5563;
+
+    h1 span.highlight {
+      background: linear-gradient(120deg, #ffd100, #ff6e14, #00b5e2);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      max-width: 520px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 22px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .hero-meta span {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(7, 10, 32, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-meta span strong {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .hero-meta span::before {
+      content: "●";
+      font-size: 8px;
+      color: var(--cnx-aqua);
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .hero-tags span {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(10, 12, 34, 0.9);
+      color: var(--text-muted);
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .btn-primary,
+    .btn-ghost {
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cnx-aqua), var(--cnx-blue));
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(0, 181, 226, 0.5);
+      border: 1px solid rgba(0, 181, 226, 0.7);
+      transform: translateY(0);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 36px rgba(0, 181, 226, 0.68);
+      filter: brightness(1.05);
+    }
+
+    .btn-ghost {
+      background: rgba(10, 12, 34, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--text-main);
+    }
+
+    .btn-ghost span.icon {
+      font-size: 14px;
+    }
+
+    .hero-photo-card {
+      position: relative;
+      border-radius: 28px;
+      padding: 18px 18px 18px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(0, 156, 166, 0.16), transparent 55%),
+        radial-gradient(circle at 80% 100%, rgba(255, 110, 20, 0.24), transparent 55%),
+        linear-gradient(145deg, rgba(7, 10, 32, 0.9), rgba(16, 20, 45, 0.98));
+      border: var(--border-subtle);
+      overflow: hidden;
+      min-height: 260px;
+    }
+
+    .hero-photo-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.16) 0, transparent 50%);
+      mix-blend-mode: soft-light;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .hero-photo-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 18px;
+    }
+
+    @media (max-width: 600px) {
+      .hero-photo-inner {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: center;
+        text-align: center;
+      }
+    }
+
+    .avatar-wrap {
+      position: relative;
+      width: 150px;
+      aspect-ratio: 1 / 1;
+      border-radius: 999px;
+      padding: 4px;
+      background: conic-gradient(from 210deg, var(--cnx-aqua), var(--cnx-green), var(--cnx-orange), var(--cnx-aqua));
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+      animation: orbit 12s linear infinite;
+    }
+
+    .avatar-inner {
+      border-radius: inherit;
+      overflow: hidden;
+      background: #060814;
+      padding: 2px;
+      animation: freeze 12s linear infinite;
+    }
+
+    .avatar-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: inherit;
+      display: block;
+      transform: scale(1.03);
+    }
+
+    @keyframes orbit {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes freeze {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(-360deg);
+      }
+    }
+
+    .hero-photo-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .hero-photo-meta h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 2px;
+      color: #ffffff;
+    }
+
+    .hero-photo-meta .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .chip-stat {
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(10, 12, 34, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 11px;
+    }
+
+    .chip-stat span.label {
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .chip-stat span.value {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .chip-stat span.accent {
+      color: #ccfbc3;
+      font-size: 10px;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.9fr) minmax(0, 1.5fr);
+      gap: 22px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 980px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    section {
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::before {
+      content: "";
+      width: 16px;
+      height: 2px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--cnx-aqua), var(--cnx-yellow));
+    }
+
+    .card {
+      border-radius: var(--radius-xl);
+      background: rgba(6, 8, 25, 0.94);
+      border: var(--border-subtle);
+      padding: 16px 16px 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card + .card {
+      margin-top: 10px;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(0, 181, 226, 0.12), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 14px;
       font-weight: 600;
     }
 
-    .card{
-      background: var(--white);
-      border-radius: 14px;
-      box-shadow: 0 12px 24px rgba(0,0,0,.06);
-      padding: 1.25rem;
-      margin: 1.5rem auto 2rem;
-    }
-
-    /* Controles */
-    .controls{
-      display: grid;
-      grid-template-columns: 1fr repeat(3, minmax(180px, 200px)) auto;
-      gap: .75rem;
-      align-items: center;
-    }
-    .control{
-      padding: .8rem .95rem;
-      border: 2px solid var(--cnx-aqua);
-      border-radius: 10px;
-      background: var(--white);
-      font-size: 0.98rem;
-      outline: none;
-      transition: box-shadow .2s ease, border-color .2s ease;
-    }
-    .control:focus{
-      border-color: var(--cnx-teal);
-      box-shadow: 0 0 0 3px rgba(25,194,181,.18);
-    }
-    .btn{
-      padding: .85rem 1rem;
-      border: none;
-      border-radius: 10px;
-      background: var(--cnx-aqua);
-      color: var(--white);
-      font-weight: 700;
-      cursor: pointer;
-      transition: background .2s ease, transform .05s ease;
-      white-space: nowrap;
-    }
-    .btn:hover{ background: var(--cnx-teal); }
-    .btn:active{ transform: translateY(1px); }
-    .btn.secondary{
-      background: #ffffff;
-      color: var(--cnx-navy);
-      border: 2px solid var(--cnx-navy);
-    }
-    .actions{
-      display:flex; gap:.5rem; justify-content:flex-end;
-    }
-
-    /* Tabla */
-    table{ width:100%; border-collapse: collapse; border-radius:12px; overflow:hidden; }
-    thead th{
-      background: var(--cnx-navy);
-      color: var(--white);
-      text-align:left;
-      padding: .95rem 1rem;
-      font-weight: 700;
-    }
-    tbody td{
-      padding: .9rem 1rem;
-      border-bottom: 1px solid #eef2f7;
-      vertical-align: top;
-    }
-    tbody tr:nth-child(even){ background:#fafafa; }
-    tbody tr:hover{ background:#f0fdfd; }
-
-    .severity-Leve{ color: var(--cnx-yellow); font-weight: 700; }
-    .severity-Grave{ color: var(--cnx-pink); font-weight: 700; }
-    .severity-Muygrave{ color: var(--cnx-navy); font-weight: 700; } /* <- "Muy grave" sin espacio en clase */
-
-    .badge{
-      display:inline-block;
-      padding: .25rem .6rem;
+    .card-tag {
+      padding: 4px 10px;
       border-radius: 999px;
-      background: var(--cnx-aqua);
-      color: var(--white);
-      font-size: .78rem;
-      font-weight: 700;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border: 1px solid rgba(0, 181, 226, 0.5);
+      color: #d2f6ff;
     }
 
-    footer{
-      padding: 1.25rem 1rem 2rem;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:.75rem;
+    .card p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
     }
-    footer img{ height:42px; }
-    footer small{ color:#6b7280; font-weight:600; }
-    @media (max-width: 900px){
-      .controls{ grid-template-columns: 1fr 1fr; }
-      .actions{ grid-column: 1 / -1; }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
     }
+
+    .pill-row span {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 18px;
+      margin-top: 4px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 2px;
+      bottom: 2px;
+      width: 1px;
+      background: linear-gradient(180deg, var(--cnx-aqua), transparent 60%);
+      opacity: 0.75;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 14px;
+      margin-bottom: 10px;
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -1px;
+      top: 4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle, #ffffff, var(--cnx-aqua));
+      box-shadow: 0 0 0 4px rgba(0, 181, 226, 0.15);
+    }
+
+    .timeline-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+
+    .timeline-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+
+    .timeline-body {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 700px) {
+      .grid-2 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .skill-tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .skill-tag-cloud span {
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: rgba(12, 14, 32, 0.9);
+    }
+
+    .progress-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+
+    .progress-label {
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+    }
+
+    .progress-label span.name {
+      color: #ffffff;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--cnx-aqua), var(--cnx-green));
+      transform-origin: left;
+      animation: grow 1.4s ease forwards;
+    }
+
+    @keyframes grow {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+
+    footer {
+      margin-top: 18px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    footer .foot-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    footer .foot-pills span {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(9, 11, 29, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    a {
+      color: #cdecff;
+    }
+  
+/* Tabs styles */
+.tabs {
+  margin-top: 8px;
+}
+.tab-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.tab-button {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(10, 12, 34, 0.9);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.tab-button.active {
+  background: linear-gradient(135deg, var(--cnx-aqua), var(--cnx-blue));
+  color: #fff;
+  border: 1px solid rgba(0, 181, 226, 0.7);
+}
+.tab-panel {
+  display: none;
+}
+.tab-panel.active {
+  display: block;
+}
+
   </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <h1>Matriz Disciplinaria</h1>
-      <p class="subtitle">Busca, filtra por severidad y categoría, y revisa artículos rápidamente.</p>
-    </div>
-  </header>
+  <div class="shell">
+    <div class="shell-inner">
+      <header>
+        <div>
+          <div class="hero-badge-row">
+            <div class="pill pill-pill">
+              <span class="pill-dot"></span>
+              TRAINING &amp; QUALITY ROADSHOW
+            </div>
+            <div class="pill">
+              LATAM · CX · BPO · GEN Z
+            </div>
+          </div>
 
-  <main class="container">
-    <section class="card">
-      <div class="controls">
-        <input id="searchInput" class="control" type="text" placeholder="Buscar por artículo o infracción…">
-        <select id="severitySelect" class="control">
-          <option value="Todas">Todas severidades</option>
-          <option value="Leve">Leve</option>
-          <option value="Grave">Grave</option>
-          <option value="Muy grave">Muy grave</option>
-        </select>
-        <select id="categorySelect" class="control">
-          <option value="Todas">Todas categorías</option>
-        </select>
-        <select id="limitSelect" class="control">
-          <option value="10">10 filas</option>
-          <option value="25">25 filas</option>
-          <option value="50">50 filas</option>
-          <option value="9999">Todas</option>
-        </select>
-        <div class="actions">
-          <button id="clearBtn" class="btn secondary">Limpiar</button>
-          <button id="exportBtn" class="btn">Exportar CSV</button>
+          <h1>
+            Hi! I’m <span class="highlight">Ronald Guido</span><br />
+            Training, Quality &amp; Data-Driven CX Lead
+          </h1>
+
+          <p class="hero-subtitle">Versatile Training &amp; Quality Supervisor with a proven track record of driving frontline performance, operational excellence and customer satisfaction. I connect people, process and data to make customer experiences simpler and more human. I’ve grown from QA into a Training &amp; Quality supervisor, leading projects across FinTech, retail and digital fitness while building an ecosystem of training and quality tools.</p>
+
+          <div class="hero-meta">
+            <span><strong>Base:</strong> Nicaragua · Central America</span>
+            <span><strong>Focus:</strong> Training &amp; Quality · QA · DSAT / CSAT Analytics</span>
+            <span><strong>Accounts:</strong> Credit Karma, Lowe’s, Zwift &amp; others</span>
+          </div>
+
+          <div class="hero-tags">
+            <span>#Concentrix</span>
+            <span>#TrainingAndQuality</span>
+            <span>#QA</span>
+            <span>#Excel &amp; Power BI</span>
+            <span>#PowerApps</span>
+            <span>#CXAnalytics</span>
+            <span>#GenZLeader</span>
+          </div>
+
+          <div class="cta-row">
+            <!-- Replace mailto with your real e-mail if you want -->
+            <a href="mailto:your.email@domain.com?subject=Let%27s%20talk%20T%26Q" class="btn-primary">
+              Let’s talk enablement
+            </a>
+            <a href="#projects" class="btn-ghost">
+              <span class="icon">▼</span>
+              View key projects
+            </a>
+          </div>
         </div>
-      </div>
 
-      <div style="overflow:auto; margin-top:1rem;">
-        <table>
-          <thead>
-            <tr>
-              <th style="width:120px;">Artículo</th>
-              <th>Infracción</th>
-              <th style="width:120px;">Severidad</th>
-              <th style="width:220px;">Categoría</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"><tr><td colspan="4">Cargando…</td></tr></tbody>
-        </table>
-      </div>
-    </section>
-  </main>
+        <div class="hero-photo-card">
+          <div class="hero-photo-inner">
+            <div class="avatar-wrap">
+              <div class="avatar-inner">
+                <img src="https://remrolls.blob.core.windows.net/remrollsimage/IMG_2485.jpg" alt="Profile photo of Ronald Guido" />
+              </div>
+            </div>
+            <div class="hero-photo-meta">
+              <h2>Snapshot</h2>
+              <p>
+                QA-grown, Training-obsessed, and very into building scalable systems. I like my dashboards clean, my SOPs
+                simple, and my teams empowered.
+              </p>
+              <div class="mini-grid">
+                <div class="chip-stat">
+                  <span class="label">Path</span>
+                  <span class="value">QA → T&amp;Q Supervisor</span>
+                  <span class="accent">Coaching · governance · analytics</span>
+                </div>
+                <div class="chip-stat">
+                  <span class="label">Specialty</span>
+                  <span class="value">T&amp;Q tools ecosystem</span>
+                  <span class="accent">PowerApps · HTML · SharePoint</span>
+                </div>
+                <div class="chip-stat">
+                  <span class="label">Strengths</span>
+                  <span class="value">Data-driven &amp; people-first</span>
+                  <span class="accent">Storytelling with numbers</span>
+                </div>
+                <div class="chip-stat">
+                  <span class="label">Learning</span>
+                  <span class="value">Psychology @ UNICA</span>
+                  <span class="accent">Human behavior + CX</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
 
-  <footer>
-    <img src="https://cnxmail.sharepoint.com/:u:/r/sites/TrainingTeamCNX/Shared%20Documents/ripple_full%20(1).svg?csf=1&web=1&e=JbWgBf" alt="Concentrix ripple logo">
-    <small>© Concentrix</small>
-  </footer>
+      <main>
+        <!-- LEFT COLUMN -->
+        <div>
+          <section id="about">
+            <div class="section-title">Profile &amp; Story</div>
+            <div class="card">
+              <div class="card-header-row">
+                <div class="card-title">Who I am in one slide</div>
+                <div class="card-tag">People · Process · Data</div>
+              </div>
+              <p>
+                I’m a Training &amp; Quality supervisor who grew up inside CX operations. I started on the QA side,
+                auditing calls and chats, and evolved into someone who designs <strong>governance, coaching flows, and
+                enablement experiences</strong> for entire accounts. I mix Excel, Power BI, PowerApps and HTML to make
+                quality <em>visible</em> and actionable for agents, TLs, and clients.
+              </p>
+              <p style="margin-top: 8px;">
+                I love turning raw DSAT/QA data into <strong>roadmaps</strong>: KANO analyses, 30-60-90 plans, heatmaps by
+                tenure, and dashboards that actually tell a story. My style is very Gen Z: straight to the point,
+                visually clean, and always thinking about the agent experience.
+              </p>
+              <div class="pill-row">
+                <span>Executive-ready summaries</span>
+                <span>Action-oriented coaching</span>
+                <span>Design-minded T&amp;Q</span>
+                <span>Bilingual (ES/EN)</span>
+              </div>
+            </div>
+          </section>
+
+          <section id="experience">
+            <div class="section-title">Experience &amp; Impact</div>
+
+            <div class="card">
+              <div class="card-header-row">
+                <div class="card-title">Training &amp; Quality Leadership</div>
+                <div class="card-tag">Concentrix</div>
+              </div>
+              <div class="timeline">
+                <div class="timeline-item">
+                  <div class="timeline-title">Training &amp; Quality Supervisor · Multi‑account</div>
+                  <div class="timeline-meta">Concentrix · Present</div>
+                  <div class="timeline-body">
+                    Lead end‑to‑end training and quality operations across frontline teams, aligning programs with KPIs and business objectives. Design dynamic curricula supported by performance analytics to close skill gaps. Oversee QA governance through metric design, coaching and performance monitoring, and drive continuous improvement initiatives in collaboration with operations, trainers and client stakeholders.
+                  </div>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="timeline-title">Supervisor Trainee · Training &amp; Quality</div>
+                  <div class="timeline-meta">Concentrix · Mar&nbsp;2025 – Aug&nbsp;2025</div>
+                  <div class="timeline-body">
+                    Gained advanced leadership competencies and benchmarking skills. Assisted with performance reporting and cross‑functional alignment, and contributed to refining QA metrics and evaluation frameworks.
+                  </div>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="timeline-title">Trainer II · Training &amp; Quality</div>
+                  <div class="timeline-meta">Concentrix · Jan&nbsp;2024 – Mar&nbsp;2025</div>
+                  <div class="timeline-body">
+                    Delivered onboarding and upskilling sessions focused on communication, systems and compliance. Developed tools using Power BI, Power Apps and Python to enhance data tracking and reporting. Partnered with QA teams to ensure training content was aligned with real‑time performance insights.
+                  </div>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="timeline-title">Trainer &amp; Quality Analyst</div>
+                  <div class="timeline-meta">Concentrix · Sep&nbsp;2023 – Apr&nbsp;2024</div>
+                  <div class="timeline-body">
+                    Conducted call monitoring, quality assessments and agent coaching sessions. Designed targeted training to support frontline performance and customer satisfaction. Championed improvement initiatives and collaborated with leadership to evolve quality standards.
+                  </div>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="timeline-title">Customer Service Representative</div>
+                  <div class="timeline-meta">Concentrix · Jan&nbsp;2023 – Aug&nbsp;2023</div>
+                  <div class="timeline-body">
+                    Delivered empathetic, solution‑focused support across various customer channels. Quickly mastered internal systems and maintained performance excellence under pressure.
+                  </div>
+                </div>
+              </div>
+                  <div class="timeline-meta">Credit Karma · Zwift · other CX programs</div>
+                  <div class="timeline-body">
+                    Owns T&amp;Q governance, calibrations, DSAT/QA read-outs, and coaching rhythms across accounts. Partners
+                    with operations, trainers and QAs to translate trends into concrete playbooks, refreshers and
+                    escalations that actually move metrics.
+                  </div>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="timeline-title">Quality Analyst · FinTech &amp; Retail</div>
+                  <div class="timeline-meta">From case-level QA to roadmap design</div>
+                  <div class="timeline-body">
+                    Conducted audits across phone, chat and email; flagged risk, coached agents and connected individual
+                    behaviors to bigger patterns. This is where RemRolls started: a need to centralize reminders,
+                    coaching and visuals in one consistent T&amp;Q language.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header-row">
+                <div class="card-title">Academic &amp; Learning Journey</div>
+                <div class="card-tag">Learning Mindset</div>
+              </div>
+              <div class="timeline">
+                <div class="timeline-item">
+                  <div class="timeline-title">Psychology · UNICA</div>
+                  <div class="timeline-meta">Starting February · Focus on human behavior &amp; motivation</div>
+                  <div class="timeline-body">
+                    Bringing academic psychology into T&amp;Q: understanding how people learn, what motivates change, and how
+                    to design training and coaching that actually sticks.
+                  </div>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="timeline-title">Chemistry · UNAN León (incomplete)</div>
+                  <div class="timeline-meta">3 years</div>
+                  <div class="timeline-body">
+                    Built a strong analytical base and discipline. Eventually paused the degree to focus on a career
+                    path where I could grow faster in CX and leadership.
+                  </div>
+                </div>
+
+                <div class="timeline-item">
+                  <div class="timeline-title">Systems Engineering · UAM (incomplete)</div>
+                  <div class="timeline-meta">2 years</div>
+                  <div class="timeline-body">
+                    Deepened my interest in systems thinking and technology. Today that shows up in how I design
+                    PowerApps, workflows and data structures for T&amp;Q.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div>
+          <section id="projects">
+            <div class="section-title">Flagship Projects &amp; Systems</div>
+            <div class="tabs">
+              <div class="tab-buttons">
+                <button class="tab-button active" data-tab="ecosystem">T&amp;Q Tools Ecosystem</button>
+                <button class="tab-button" data-tab="analytics">DSAT / QA Analytics</button>
+                <button class="tab-button" data-tab="assistants">Disciplinary &amp; Coaching Assistants</button>
+              </div>
+              <div class="tab-panels">
+                <div class="tab-panel active" id="tab-ecosystem">
+                  <div class="card">
+                    <div class="card-header-row">
+                      <div class="card-title">Training &amp; Quality Tools Ecosystem</div>
+                      <div class="card-tag">Product‑style T&amp;Q</div>
+                    </div>
+                    <p>
+                      Over the years I have developed an ecosystem of training and quality tools: PowerApps forms, HTML templates, SharePoint lists and automated flows that keep QA, Training and Ops aligned. These tools make coaching, performance insights and reminders consistent and accessible to everyone. For example:
+                    </p>
+                    <ul style="margin-top: 8px; padding-left: 18px; font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                      <li><strong>Coaching &amp; reminder cards</strong> with branded HTML templates for easy, actionable feedback.</li>
+                      <li><strong>Performance vs. potential mapping</strong> tools to visualize who needs support and who is ready for growth.</li>
+                      <li><strong>Case randomizer</strong> to select QA samples fairly and transparently.</li>
+                      <li>Previewers and converters that turn HTML into images for decks, emails and PowerApps.</li>
+                    </ul>
+                    <div class="pill-row">
+                      <span>SharePoint + Azure Blob</span>
+                      <span>HTML &amp; CSS branding</span>
+                      <span>PowerApps + Power Automate</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-panel" id="tab-analytics">
+                  <div class="card">
+                    <div class="card-header-row">
+                      <div class="card-title">DSAT / QA Analytics &amp; Storytelling</div>
+                      <div class="card-tag">KANO · Roadmaps</div>
+                    </div>
+                    <p>
+                      I regularly take raw DSAT/QA exports (WB weeks, tenure buckets, drivers) and transform them into executive-friendly stories: KANO categorizations, Pareto charts, bottom/top quartile views and 30-60-90 plans that make it clear what we’ll do <em>next</em>.
+                    </p>
+                    <p style="margin-top: 8px;">
+                      This includes slicing by tenure, channel, driver and AOO; mapping surveys to “Must Have / Performance / Delighter”; and suggesting targeted refreshers for things like unresponsive behavior, soft skills and mis-positioned policies.
+                    </p>
+                    <div class="pill-row">
+                      <span>Excel &amp; advanced formulas</span>
+                      <span>Power BI visuals</span>
+                      <span>Executive summaries</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-panel" id="tab-assistants">
+                  <div class="card">
+                    <div class="card-header-row">
+                      <div class="card-title">Disciplinary &amp; Coaching Assistants</div>
+                      <div class="card-tag">React · Tailwind</div>
+                    </div>
+                    <p>
+                      I’ve been designing assistants that support leaders in the “hard” conversations: disciplinary flows, NCNS tracking and coaching documentation — always respecting policy, but keeping the UX simple and human.
+                    </p>
+                    <p style="margin-top: 8px;">
+                      Recent work includes a <strong>React + Tailwind</strong> disciplinary assistant prototype with search features (Fuse.js) over a matrix of infractions, and PowerApps forms that pre-fill coachee info from SharePoint datasets.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="skills">
+            <div class="section-title">Skills &amp; Superpowers</div>
+            <div class="card">
+              <div class="grid-2">
+                <div>
+                  <div class="progress-row">
+                    <div class="progress-label">
+                      <span class="name">Training &amp; QA Governance</span>
+                      <span>Advanced</span>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill" style="width: 92%;"></div>
+                    </div>
+                  </div>
+                  <div class="progress-row">
+                    <div class="progress-label">
+                      <span class="name">Data Analysis (Excel / Power BI)</span>
+                      <span>Advanced</span>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill" style="width: 90%;"></div>
+                    </div>
+                  </div>
+                  <div class="progress-row">
+                    <div class="progress-label">
+                      <span class="name">PowerApps &amp; Workflow Design</span>
+                      <span>Strong</span>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill" style="width: 84%;"></div>
+                    </div>
+                  </div>
+                  <div class="progress-row">
+                    <div class="progress-label">
+                      <span class="name">Soft Skills &amp; Coaching</span>
+                      <span>Strong</span>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill" style="width: 86%;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="skill-tag-cloud"><span>Executive summaries</span>
+                    <span>DSAT / CSAT storytelling</span>
+                    <span>KANO frameworks</span>
+                    <span>Tenure-based actions</span>
+                    <span>Soft skills refreshers</span>
+                    <span>PowerApps + SharePoint</span>
+                    <span>Azure Blob assets</span>
+                    <span>React &amp; Tailwind UI</span>
+                    <span>HTML + CSS branding</span>
+                    <span>Bilingual enablement</span>
+                    <span>Project management</span>
+                    <span>Python &amp; statistics</span>
+                    <span>Six Sigma &amp; continuous improvement</span>
+                    <span>Leadership &amp; change</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+<!-- Courses & Certifications -->
+<section id="certifications">
+  <div class="section-title">Courses &amp; Certifications</div>
+  <div class="card">
+    <p>
+      Continuous learning is part of my DNA. I’ve pursued certifications to deepen my toolkit and keep up with modern practices:
+    </p>
+    <ul style="margin-top: 8px; padding-left: 18px; font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+      <li>Six Sigma White Belt (LinkedIn Learning, Jan&nbsp;2024)</li>
+      <li>Project Management Foundations (PMI &amp; NASBA, Jan&nbsp;2024)</li>
+      <li>Python Statistics Essential Training (Jan&nbsp;2024)</li>
+      <li>Leadership Foundations &amp; Leading Projects &amp; Strategic Leadership (Jan&nbsp;2025)</li>
+      <li>Generative AI Basics (Jan&nbsp;2025)</li>
+      <li>Speaking Confidently &amp; Leading Through Change (Jan&nbsp;2025)</li>
+    </ul>
+  </div>
+</section>
+        </div>
+      </main>
+
+      <footer>
+        <div>© <span id="year-span">2025</span> · Roadshow profile of <strong>Ronald Guido</strong></div>
+        <div class="foot-pills">
+          <span>Training &amp; Quality</span>
+          <span>QA &amp; Coaching</span>
+          <span>Data-driven CX</span>
+          <span>T&amp;Q tools</span>
+        </div>
+      </footer>
+    </div>
+  </div>
 
   <script>
-    /* =============== DATASET COMPLETO =============== */
-    const disciplinaryMatrix = [
-      { article: "A.1.1",  infraction: "La participación o promoción, dentro de las instalaciones de la Empresa de cualquier forma de juego, loterías, juegos de azar, rafas, ventas, solicitar o recolectar contribuciones para cualquier fin, en cualquier momento, dentro de las instalaciones de la Empresa o por canal corporativo.", severity: "Leve" },
-      { article: "A.1.2",  infraction: "Ingresar a la Empresa en horas o días no laborales, por subsidio, incapacidad, suspensión, vacaciones u otra licencia.", severity: "Leve" },
-      { article: "A.1.3",  infraction: "Promover, proponer, o practicar el préstamo de dinero con fines de lucro o beneficio personal dentro de las instalaciones de la Empresa, o tomando ventaja del cargo/posición que ocupa.", severity: "Leve" },
-      { article: "A.1.4",  infraction: "Injustificada omisión del uso de la identificación dentro de las instalaciones de la Empresa.", severity: "Leve" },
-      { article: "A.1.5",  infraction: "Cometer actos contra la sanidad, limpieza y las normas de tráfico, y estacionamiento dentro de instalaciones de la Empresa.", severity: "Leve" },
-      { article: "A.1.6",  infraction: "Violación del Código de Uso de Vestimenta establecido.", severity: "Leve" },
-      { article: "A.1.7",  infraction: "Uso de computadoras de la Empresa (incluyendo, pero no limitado a equipos de escritorio, portátiles, y servidores) para actividades no relacionadas con el trabajo, como jugar, navegar, chatear, etc.", severity: "Leve" },
-      { article: "A.1.8",  infraction: "Uso inadecuado de identificación personal, incluyendo, pero no limitado a: no portar tarjeta de identificación (Badge), permitir la entrada de alguien que no ande su tarjeta, no marcar con su tarjeta en el control de acceso (Tailgating), Etc.", severity: "Leve" },
-      { article: "A.1.9",  infraction: "Cambiar la configuración física de las estaciones de trabajo (incluyendo, pero no limitado CPUs, monitores, amplificadores, teléfonos IP, auriculares, UPS, etiquetas del ordenador).", severity: "Leve" },
-      { article: "A.1.10", infraction: "Ingerir alimentos de cualquier tipo en áreas restringidas, incluyendo, pero no limitado a pisos de producción, oficinas administrativas, áreas de entrenamiento, etc.", severity: "Leve" },
-      { article: "A.1.11", infraction: "Seguir a otra persona a través de puntos de control de seguridad sin ser revisado (también conocido como 'colarse') u obtener acceso a áreas restringidas mediante representación falsa o fraude.", severity: "Leve" },
-      { article: "A.1.12", infraction: "Seguir a otra persona a través de puntos de control de seguridad sin ser revisado (también conocido como 'colarse') u obtener acceso a áreas restringidas mediante representación falsa o fraude.", severity: "Leve" },
-      { article: "A.1.13", infraction: "Falta de registro y acompañamiento de invitados/visitantes en lugares donde la Compañía realiza negocios.", severity: "Leve" },
-      { article: "A.1.14", infraction: "Fallo en completar con éxito la capacitación obligatoria derivada de una simulación de phishing fallida o de un ataque de ciberseguridad real.", severity: "Leve" },
-      { article: "A.1.15", infraction: "Simulación de phishing fallida o ataque real de ciberseguridad, De 2 - 4 semanas de vencido, aplica AV y De 4 - 6 semanas de vencido, aplica AE.", severity: "Leve" },
-      { article: "A.1.16", infraction: "Incumplimiento o atraso en el alcance o cumplimiento de proyectos asignados, además de las tareas regulares (p. ej., certificación Lean Six Sigma, requisito ISO).", severity: "Leve" },
-      { article: "A.1.17", infraction: "Presentarse tarde a su turno, en dos ocasiones durante un mes, incluyendo retorno de almuerzos o descanso.", severity: "Leve" },
-      { article: "A.1.18", infraction: "No marcar el control de entrada/salida en el sistema correspondiente en dos ocasiones durante una misma semana.", severity: "Leve" },
-      { article: "A.1.19", infraction: "No presentarse a realizar las horas extra voluntariamente acordadas y previamente aprobadas, afectando la productividad de la empresa – sin razón válida.", severity: "Leve" },
-      { article: "A.1.20", infraction: "No informar a su jefe inmediato, o en su defecto a Recursos Humanos, las razones de su ausencia o llegada tarde, en las primeras dos horas del día laboral.", severity: "Leve" },
-
-      { article: "B.1.1",  infraction: "Publicación no autorizada, eliminación o alteración de documentos oficiales publicados en la tabla de avisos de la empresa.", severity: "Grave" },
-      { article: "B.1.2",  infraction: "Ingresar o permitir que personas no autorizadas ingresen en áreas restringidas sin causas justificadas.", severity: "Grave" },
-      { article: "B.1.3",  infraction: "Emplear, manipular o alterar útiles, materiales, maquinarias, sistemas o herramientas de la Empresa para objeto distinto o beneficio propio.", severity: "Grave" },
-      { article: "B.1.4",  infraction: "Comportamiento descortés o lenguaje irrespetuoso, profano, ofensivo y/o vulgar hacia clientes o colaboradores.", severity: "Grave" },
-      { article: "B.1.5",  infraction: "Divulgación de rumores o chismes que afectan la dignidad de las personas trabajadoras o la Empresa.", severity: "Grave" },
-      { article: "B.1.6",  infraction: "Simular enfermedad, vagancia, pérdida de tiempo, o cambiar horarios/descansos sin permiso.", severity: "Grave" },
-      { article: "B.1.7",  infraction: "Dormir durante horas laborales o en áreas no autorizadas.", severity: "Grave" },
-      { article: "B.1.8",  infraction: "Faltar a reuniones programadas por el empleador.", severity: "Grave" },
-      { article: "B.1.9",  infraction: "Mala práctica en funciones con 0 tolerancia del cliente (cortar llamadas, transferencias no autorizadas, etc.).", severity: "Grave" },
-      { article: "B.1.10", infraction: "Propaganda o proselitismo político / reuniones no autorizadas en el centro de trabajo.", severity: "Grave" },
-      { article: "B.1.11", infraction: "Omisión de reportar relaciones románticas en contextos de conflicto (jefe-subordinado, etc.).", severity: "Grave" },
-      { article: "B.1.12", infraction: "No seguir instrucciones relativas al desempeño o reincidencia en bajo desempeño/métricas.", severity: "Grave" },
-      { article: "B.1.13", infraction: "Fumar (incluye electrónicos) en zonas prohibidas.", severity: "Grave" },
-      { article: "B.1.14", infraction: "Incumplimiento de exámenes periódicos o anuales de salud.", severity: "Grave" },
-      { article: "B.1.15", infraction: "Incumplimiento de participación en programas/simulacros de salud/seguridad.", severity: "Grave" },
-      { article: "B.1.16", infraction: "Negativa a reasignaciones/cambios de lugar u horario justificados.", severity: "Grave" },
-      { article: "B.1.17", infraction: "Negativa a someterse a una inspección razonable (si la ley lo permite).", severity: "Grave" },
-      { article: "B.1.18", infraction: "Negativa a instrucciones o acciones que pongan en riesgo la salud/seguridad.", severity: "Grave" },
-      { article: "B.1.19", infraction: "Insubordinación: negativa a obedecer una orden legítima o tarea asignada sin justificación.", severity: "Grave" },
-      { article: "B.1.20", infraction: "Incumplimiento de disposiciones del Contrato y Reglamento Interno de Trabajo.", severity: "Grave" },
-      { article: "B.1.21", infraction: "Ingreso no autorizado de artículos personales a áreas restringidas (COPC/PCI).", severity: "Grave" },
-      { article: "B.1.22", infraction: "Dejar desatendido y desbloqueado el equipo de trabajo (pantalla, laptop, gavetero, etc.).", severity: "Grave" },
-      { article: "B.1.23", infraction: "Descargar/instalar aplicaciones o SO no autorizados en equipos de la Compañía.", severity: "Grave" },
-      { article: "B.1.24", infraction: "Ingresar dispositivos personales/medios de almacenamiento a áreas productivas sin autorización.", severity: "Grave" },
-      { article: "B.1.25", infraction: "Manipulación de equipos informáticos propiedad del Cliente.", severity: "Grave" },
-      { article: "B.1.26", infraction: "Manipulación/ocultamiento/uso abusivo de información privilegiada u otras prácticas injustas.", severity: "Grave" },
-      { article: "B.1.27", infraction: "No revelar/gestionar conflictos de interés según políticas de la Empresa.", severity: "Grave" },
-      { article: "B.1.28", infraction: "No revelar información material relevante (p. ej., resultados, transacciones).", severity: "Grave" },
-      { article: "B.1.29", infraction: "No tomar acciones ante debilidades de control y divulgación detectadas.", severity: "Grave" },
-      { article: "B.1.30", infraction: "No gestionar riesgos del negocio que afecten el valor de las acciones.", severity: "Grave" },
-      { article: "B.1.31", infraction: "No informar daños/defectos en bienes de la Empresa con conocimiento previo.", severity: "Grave" },
-      { article: "B.1.32", infraction: "Reincidencia en no informar daños/defectos de bienes de la Empresa.", severity: "Grave" },
-      { article: "B.1.33", infraction: "No informar o corregir información incorrecta con conocimiento previo.", severity: "Grave" },
-      { article: "B.1.34", infraction: "Negligencia en funciones de supervisión/liderazgo (nómina, desempeño, bajas, SLAs, etc.).", severity: "Grave" },
-      { article: "B.1.35", infraction: "Incumplimiento deliberado de responsabilidades por parte de un supervisor/gerente.", severity: "Grave" },
-      { article: "B.1.36", infraction: "Actos que afecten la buena imagen de la Empresa/Clientes/Personas trabajadoras.", severity: "Grave" },
-      { article: "B.1.37", infraction: "Registrar salida antes de la hora oficial de forma no autorizada.", severity: "Grave" },
-
-      { article: "C.1.1",  infraction: "Provocar/instigar/participar en pelea o disturbios en o cerca del trabajo.", severity: "Muy grave" },
-      { article: "C.1.2",  infraction: "Acoso/hostigamiento no deseado.", severity: "Muy grave" },
-      { article: "C.1.3",  infraction: "Amenazar o causar lesiones a superiores, compañeros, clientes u otros relacionados.", severity: "Muy grave" },
-      { article: "C.1.4",  infraction: "Insinuaciones/solicitudes sexuales u otra conducta sexual que genere ambiente hostil.", severity: "Muy grave" },
-      { article: "C.1.5",  infraction: "Discriminación por etnia, raza, religión, género, etc.", severity: "Muy grave" },
-      { article: "C.1.6",  infraction: "Violaciones a Seguridad de Información (divulgación/copia/difusión no autorizada).", severity: "Muy grave" },
-      { article: "C.1.7",  infraction: "Sabotaje o actos deliberados que interrumpan operaciones.", severity: "Muy grave" },
-      { article: "C.1.8",  infraction: "Mala práctica escalada por cliente/seguridad sin identificar fraude del empleado.", severity: "Muy grave" },
-      { article: "C.1.9",  infraction: "Alcohol/drogas: presentarse, consumir, poseer, distribuir, etc.", severity: "Muy grave" },
-      { article: "C.1.10", infraction: "Usar carnet en lugares inapropiados o para actividades políticas.", severity: "Muy grave" },
-      { article: "C.1.11", infraction: "Poseer/transferir/vender/usar armas o instrumentos peligrosos en áreas de negocio.", severity: "Muy grave" },
-      { article: "C.1.12", infraction: "Posesión/venta/estar bajo efectos de drogas prohibidas.", severity: "Muy grave" },
-      { article: "C.1.13", infraction: "Obstrucción de investigación; información falsa u ocultamiento.", severity: "Muy grave" },
-      { article: "C.1.14", infraction: "Acusar maliciosamente de falsos errores o faltas.", severity: "Muy grave" },
-      { article: "C.1.15", infraction: "Cambiar configuración de equipos de la Empresa (seguridad/sistema) comprobado.", severity: "Muy grave" },
-      { article: "C.1.16", infraction: "Visualización/almacenamiento de material pornográfico con recursos de la Empresa.", severity: "Muy grave" },
-      { article: "C.1.17", infraction: "Propagar malware a sabiendas (virus, troyanos, gusanos).", severity: "Muy grave" },
-      { article: "C.1.18", infraction: "Uso inapropiado o malicioso de información confidencial/propietaria.", severity: "Muy grave" },
-      { article: "C.1.19", infraction: "Negociar con información privilegiada.", severity: "Muy grave" },
-      { article: "C.1.20", infraction: "Soborno/corrupción para obtener beneficios.", severity: "Muy grave" },
-      { article: "C.1.21", infraction: "Tergiversar datos de la Empresa hacia terceros.", severity: "Muy grave" },
-      { article: "C.1.22", infraction: "Incumplimiento fraudulento de controles/procedimientos de divulgación.", severity: "Muy grave" },
-      { article: "C.1.23", infraction: "Soborno/corrupción con agentes de gobierno o reguladores.", severity: "Muy grave" },
-      { article: "C.1.24", infraction: "Usar autoridad para vender productos a subordinados.", severity: "Muy grave" },
-      { article: "C.1.25", infraction: "Abuso de autoridad en funciones de supervisión/liderazgo.", severity: "Muy grave" },
-      { article: "C.1.26", infraction: "Conducta inapropiada gerencial que conduzca a pérdida de confianza.", severity: "Muy grave" },
-      { article: "C.1.27", infraction: "Marcar/registrar entradas o salidas por otra persona o conspirar para ello.", severity: "Muy grave" },
-      { article: "C.1.28", infraction: "Informes falsos que ocasionen pérdida de ingresos o daño a imagen.", severity: "Muy grave" },
-      { article: "C.1.29", infraction: "Presentar documentos falsos o alterados (subsidios, constancias, récord policial, etc.).", severity: "Muy grave" },
-      { article: "C.1.30", infraction: "Alteración maliciosa de información en sistemas o BD de la Empresa/Clientes.", severity: "Muy grave" },
-      { article: "C.1.31", infraction: "Falsificación/apropiación/no rendir cuentas de fondos de la Empresa.", severity: "Muy grave" },
-      { article: "C.1.32", infraction: "Complicidad para falsificar o apropiarse indebidamente de fondos.", severity: "Muy grave" },
-      { article: "C.1.33", infraction: "Actos que desacrediten a la Empresa y promuevan hostilidad/desmoralización.", severity: "Muy grave" },
-      { article: "C.1.34", infraction: "Ausencia por tres días hábiles consecutivos sin aviso/autorización.", severity: "Muy grave" },
-      { article: "C.1.35", infraction: "Piratería/copia o divulgación no autorizada de propiedad intelectual/credenciales.", severity: "Muy grave" },
-      { article: "C.1.36", infraction: "Publicar/transmitir imágenes sexualmente explícitas u ofensivas con recursos de la Empresa.", severity: "Muy grave" },
-      { article: "C.1.37", infraction: "Obtención no autorizada (o soborno para obtener) info confidencial.", severity: "Muy grave" },
-      { article: "C.1.38", infraction: "Uso malicioso de información confidencial/propietaria bajo su custodia.", severity: "Muy grave" },
-      { article: "C.1.39", infraction: "Revelar ofertas de adquisición o datos relacionados a personas no autorizadas.", severity: "Muy grave" },
-      { article: "C.1.40", infraction: "Recibir préstamo o garantía de un tercero por su posición en la Compañía.", severity: "Muy grave" }
-    ];
-
-    /* ========= CATEGORÍAS (tu mapeo) ========= */
-    const categoriasPorArticulo = {
-      "A.1.17":"Asistencia y puntualidad","A.1.18":"Asistencia y puntualidad","A.1.19":"Asistencia y puntualidad","A.1.20":"Asistencia y puntualidad","C.1.34":"Asistencia y puntualidad","B.1.8":"Asistencia y puntualidad",
-      "B.1.16":"Desobediencia / Insubordinación","B.1.18":"Desobediencia / Insubordinación","B.1.19":"Desobediencia / Insubordinación","B.1.17":"Desobediencia / Insubordinación","B.1.12":"Desobediencia / Insubordinación",
-      "B.1.4":"Conducta y comportamiento","B.1.5":"Conducta y comportamiento","B.1.36":"Conducta y comportamiento","C.1.33":"Conducta y comportamiento","C.1.2":"Conducta y comportamiento","C.1.4":"Conducta y comportamiento","C.1.5":"Conducta y comportamiento","C.1.1":"Conducta y comportamiento","C.1.3":"Conducta y comportamiento","B.1.7":"Conducta y comportamiento",
-      "A.1.8":"Seguridad y control de accesos","A.1.11":"Seguridad y control de accesos","A.1.12":"Seguridad y control de accesos","A.1.13":"Seguridad y control de accesos","B.1.2":"Seguridad y control de accesos","B.1.21":"Seguridad y control de accesos",
-      "A.1.7":"Uso indebido de recursos / TI","A.1.9":"Uso indebido de recursos / TI","A.1.10":"Uso indebido de recursos / TI","C.1.15":"Uso indebido de recursos / TI","C.1.30":"Uso indebido de recursos / TI","B.1.22":"Uso indebido de recursos / TI","B.1.23":"Uso indebido de recursos / TI","B.1.25":"Uso indebido de recursos / TI","A.1.14":"Uso indebido de recursos / TI","A.1.15":"Uso indebido de recursos / TI","C.1.17":"Uso indebido de recursos / TI","C.1.6":"Uso indebido de recursos / TI","C.1.7":"Uso indebido de recursos / TI","C.1.16":"Uso indebido de recursos / TI","C.1.36":"Uso indebido de recursos / TI",
-      "B.1.26":"Ética e integridad","B.1.27":"Ética e integridad","C.1.18":"Ética e integridad","C.1.19":"Ética e integridad","C.1.20":"Ética e integridad","C.1.23":"Ética e integridad","C.1.29":"Ética e integridad","C.1.31":"Ética e integridad","C.1.32":"Ética e integridad","C.1.13":"Ética e integridad","C.1.14":"Ética e integridad","C.1.21":"Ética e integridad","C.1.22":"Ética e integridad","C.1.28":"Ética e integridad",
-      "B.1.36":"Imagen corporativa","C.1.10":"Imagen corporativa",
-      "C.1.9":"Salud y consumo","C.1.12":"Salud y consumo","B.1.13":"Salud y consumo","B.1.14":"Salud y consumo","B.1.15":"Salud y consumo",
-      "B.1.34":"Supervisión y liderazgo","B.1.35":"Supervisión y liderazgo","C.1.25":"Supervisión y liderazgo","C.1.26":"Supervisión y liderazgo",
-      "A.1.1":"Otros","A.1.3":"Otros","A.1.5":"Otros","A.1.6":"Otros","A.1.10":"Otros","B.1.10":"Otros","B.1.11":"Otros","B.1.31":"Otros","B.1.32":"Otros","B.1.33":"Otros"
-    };
-
-    /* ========= LÓGICA ========= */
-    const searchInput   = document.getElementById('searchInput');
-    const severitySelect= document.getElementById('severitySelect');
-    const categorySelect= document.getElementById('categorySelect');
-    const limitSelect   = document.getElementById('limitSelect');
-    const clearBtn      = document.getElementById('clearBtn');
-    const exportBtn     = document.getElementById('exportBtn');
-    const tableBody     = document.getElementById('tableBody');
-
-    function classifyType(severity){ return severity; }
-
-    function prepareData(matrix){
-      return matrix.map(row=>{
-        const categoria = categoriasPorArticulo[row.article] || 'Otros';
-        const type = classifyType(row.severity);
-        return { ...row, categoria, type };
-      });
-    }
-
-    let prepared = prepareData(disciplinaryMatrix);
-    let currentSearch   = '';
-    let currentSeverity = 'Todas';
-    let currentCategory = 'Todas';
-    let currentLimit    = parseInt(limitSelect.value,10);
-
-    function populateCategoryOptions(){
-      const set = new Set(prepared.map(r=>r.categoria));
-      [...set].sort().forEach(cat=>{
-        const opt=document.createElement('option');
-        opt.value=cat; opt.textContent=cat;
-        categorySelect.appendChild(opt);
-      });
-    }
-
-    function filterAndRender(){
-      const filtered = prepared.filter(r=>{
-        const q = currentSearch;
-        const matchSearch = !q || r.infraction.toLowerCase().includes(q) || r.article.toLowerCase().includes(q);
-        const matchSeverity = currentSeverity==='Todas' || r.type===currentSeverity;
-        const matchCategory = currentCategory==='Todas' || r.categoria===currentCategory;
-        return matchSearch && matchSeverity && matchCategory;
-      });
-
-      const rows = filtered.slice(0, currentLimit);
-
-      tableBody.innerHTML='';
-      if(rows.length===0){
-        const tr=document.createElement('tr');
-        const td=document.createElement('td');
-        td.colSpan=4; td.textContent='No se encontraron resultados'; td.style.textAlign='center';
-        tr.appendChild(td); tableBody.appendChild(tr);
-        return;
-      }
-
-      rows.forEach(r=>{
-        const tr=document.createElement('tr');
-
-        const tdA=document.createElement('td'); tdA.textContent=r.article; tr.appendChild(tdA);
-        const tdI=document.createElement('td'); tdI.textContent=r.infraction; tr.appendChild(tdI);
-
-        const tdS=document.createElement('td');
-        tdS.textContent=r.type;
-        tdS.classList.add('severity-' + r.type.replace(/\s+/g,'').toLowerCase().replace('muygrave','Muygrave'));
-        // asegurar clase consistente en CSS:
-        tdS.classList.add('severity-' + r.type.replace(/\s+/g,'')); 
-        tr.appendChild(tdS);
-
-        const tdC=document.createElement('td');
-        const badge=document.createElement('span'); badge.className='badge'; badge.textContent=r.categoria;
-        tdC.appendChild(badge); tr.appendChild(tdC);
-
-        tableBody.appendChild(tr);
-      });
-    }
-
-    function exportCSV(){
-      const headers = ['Artículo','Infracción','Severidad','Categoría'];
-      const filtered = prepared.filter(r=>{
-        const q=currentSearch;
-        const matchSearch = !q || r.infraction.toLowerCase().includes(q) || r.article.toLowerCase().includes(q);
-        const matchSeverity = currentSeverity==='Todas' || r.type===currentSeverity;
-        const matchCategory = currentCategory==='Todas' || r.categoria===currentCategory;
-        return matchSearch && matchSeverity && matchCategory;
-      });
-      const rows = filtered.slice(0, currentLimit);
-      const csv = [headers.join(',')].concat(
-        rows.map(x=>[
-          x.article,
-          '"' + (x.infraction || '').replace(/"/g,'""') + '"',
-          x.type,
-          '"' + (x.categoria || '').replace(/"/g,'""') + '"'
-        ].join(','))
-      ).join('\n');
-
-      const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'matriz_disciplinaria.csv';
-      document.body.appendChild(a); a.click();
-      setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
-    }
-
-    /* Eventos */
-    searchInput.addEventListener('input', e=>{ currentSearch = e.target.value.trim().toLowerCase(); filterAndRender(); });
-    severitySelect.addEventListener('change', e=>{ currentSeverity = e.target.value; filterAndRender(); });
-    categorySelect.addEventListener('change', e=>{ currentCategory = e.target.value; filterAndRender(); });
-    limitSelect.addEventListener('change', e=>{ currentLimit = parseInt(e.target.value,10); filterAndRender(); });
-
-    clearBtn.addEventListener('click', ()=>{
-      searchInput.value=''; severitySelect.value='Todas'; categorySelect.value='Todas'; limitSelect.value='10';
-      currentSearch=''; currentSeverity='Todas'; currentCategory='Todas'; currentLimit=10;
-      filterAndRender();
+    // Auto-update year in the footer
+    document.getElementById("year-span").textContent = new Date().getFullYear();
+  
+// Tab functionality for Flagship Projects
+document.addEventListener('DOMContentLoaded', function() {
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const target = button.dataset.tab;
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabPanels.forEach(panel => panel.classList.remove('active'));
+      button.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
     });
-    exportBtn.addEventListener('click', exportCSV);
+  });
+});
 
-    /* Init */
-    populateCategoryOptions();
-    filterAndRender();
   </script>
 </body>
 </html>
